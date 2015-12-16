@@ -20,24 +20,17 @@ MyScene::MyScene() : SuperScene()
 
 	text[4]->message("<Arrow keys> move tank");
 
-	/*// Load Line from file (rt2d logo)
-	// This is the preferred method.
-	rt2d_line = new BasicEntity();
-	rt2d_line->addLine("assets/rt2d.line");
-	rt2d_line->line()->color = RED;
-	rt2d_line->position = Point2(SWIDTH/3, SHEIGHT/3);
-
-	// and another one (default 128x128 square)
-	default_line = new BasicEntity();
-	default_line->addLine("assets/default.line");
-	default_line->line()->color = GREEN;
-	default_line->position = Point2((SWIDTH/3)*2, SHEIGHT/3);*/
-
 	// add player
 	player = new BasicEntity();
 	player->addSprite("assets/tankstand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	player->scale = Point2(0.5f, 0.5f);
 	player->position = Point2(SWIDTH / 3, SHEIGHT / 2);
+
+	// add enemy
+	enemy = new BasicEntity();
+	enemy->addSprite("assets/enemystand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	enemy->scale = Point2(0.5f, 0.5f);
+	enemy->position = Point2(SWIDTH / 3 * 2, SHEIGHT / 3 * 2);
 
 	// add bullet
 	bullet = new BasicEntity();
@@ -45,98 +38,42 @@ MyScene::MyScene() : SuperScene()
 	// add shotsmoke
 	smoke = new BasicEntity();
 
-	/*// Or create a new Line and add it to an Entity later.
-	// It will be unique once you added it to an Entity.
-	// You must delete it yourself after you've added it to all the Entities you want.
-	Line* tmp = new Line();
-	tmp->addPoint(-10.0f, -10.0f);
-	tmp->addPoint(20.0f, 0.0f);
-	tmp->addPoint(-10.0f, 10.0f);
-	tmp->addPoint(-10.0f, -10.0f);
+	// add explosion1
+	explosion1 = new BasicEntity();
 
-	//Create a BasicEntity as our spaceship.
-	//spaceship = new BasicEntity();
-	//spaceship->addLine(tmp);
-	//spaceship->position = Point2(SWIDTH/2, SHEIGHT/2);
-	//delete tmp; // delete when you're done with it.
+	// add explosion2
+	explosion2 = new BasicEntity();
 
-	// Shapes!!
-	shape_container = new BasicEntity();
-	shape_container->position = Point2(SWIDTH/2, (SHEIGHT/3)*2);
-	int numshapes = 12;
-	// fill shapes vector with variants of a circle
-	for (int i = 3; i <= numshapes; i++) {
-		Line* circle = new Line();
-		circle->createCircle(30, i);
-		circle->color = colors[(i-3)%10];
+	// add explosion3
+	explosion3 = new BasicEntity();
 
-		BasicEntity* b = new BasicEntity();
-		int spacing = 80;
-		// shape_container acts as pivot point (center of the shapes).
-		b->position.x = ((i-3)*spacing) - ((numshapes*spacing)/2) + (1.5f*spacing);
-		b->addLine(circle);
-		shapes.push_back(b);
-		shape_container->addChild(b);
-		delete circle;
-	}
-
-	// Dynamic Line
-	Line* dynamic = new Line();
-	dynamic->dynamic(true);
-	//dynamic->closed(true);
-	dynamic->color = GREEN;
-	int spacing = 25;
-	int amount = SWIDTH/spacing;
-	int i=0;
-	for (i = 1; i < amount; i++) {
-		dynamic->addPoint(i*spacing, 0);
-	}
-
-	dynamic_line = new BasicEntity();
-	dynamic_line->position.y = SHEIGHT-60;
-	dynamic_line->addLine(dynamic);
-	delete dynamic;*/
-
-	// Create Tree
-	//layers[0]->addChild(dynamic_line);
-	//layers[0]->addChild(rt2d_line);
-	//layers[0]->addChild(default_line);
-	layers[0]->addChild(player);
-	layers[0]->addChild(bullet);
-	layers[0]->addChild(smoke);
-	//layers[0]->addChild(spaceship);
-	//layers[0]->addChild(shape_container);
+	layers[3]->addChild(player);
+	layers[4]->addChild(bullet);
+	layers[3]->addChild(enemy);
+	layers[5]->addChild(smoke);
+	layers[6]->addChild(explosion1);
+	layers[6]->addChild(explosion2);
+	layers[6]->addChild(explosion3);
 }
 
 
 MyScene::~MyScene()
 {
-	//layers[0]->removeChild(shape_container);
-	//layers[0]->removeChild(spaceship);
-	layers[0]->removeChild(player);
-	layers[0]->removeChild(bullet);
-	layers[0]->removeChild(smoke);
-	//layers[0]->removeChild(default_line);
-	//layers[0]->removeChild(rt2d_line);
-	//layers[0]->removeChild(dynamic_line);
+	layers[3]->removeChild(player);
+	layers[4]->removeChild(bullet);
+	layers[3]->removeChild(enemy);
+	layers[5]->removeChild(smoke);
+	layers[6]->removeChild(explosion1);
+	layers[6]->removeChild(explosion2);
+	layers[6]->removeChild(explosion3);
 
-	//delete dynamic_line;
-	//delete rt2d_line;
-	//delete default_line;
 	delete player;
 	delete bullet;
+	delete enemy;
 	delete smoke;
-	//delete spaceship;
-
-	/*int s = shapes.size();
-	for (int i=0; i<s; i++) {
-		shape_container->removeChild(shapes[i]);
-		delete shapes[i];
-		shapes[i] = NULL;
-	}
-	shapes.clear();
-
-	delete shape_container;*/
+	delete explosion1;
+	delete explosion2;
+	delete explosion3;
 }
 
 void MyScene::update(float deltaTime)

@@ -25,13 +25,27 @@ public:
 
 private:
 	Timer t;
-
+	
+	//player
 	BasicEntity* player;
-	BasicEntity* bullet;
-	BasicEntity* smoke;
 
+	//items
+	BasicEntity* bullet;
+	
+	//enemies
+	BasicEntity* enemy;
+	
+	//particles
+	BasicEntity* smoke;
+	BasicEntity* explosion1;
+	BasicEntity* explosion2;
+	BasicEntity* explosion3;
+
+	//functions
 	void updateTank(float deltaTime);
 	void updateBullet(float deltaTime);
+	void updateEnemy(float deltaTime);
+	void updateExplosions(float deltaTime);
 	void tankShoot();
 };
 

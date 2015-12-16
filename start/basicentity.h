@@ -21,6 +21,7 @@ class BasicEntity: public Entity
 		virtual void update(float deltaTime);
 
 		bool isMoving;
+		bool cpuLock;
 		bool facingUp = true;
 		bool facingDown = false;
 		bool facingLeft = false;

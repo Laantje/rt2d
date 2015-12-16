@@ -1,37 +1,38 @@
 /**
- * Copyright 2015 Your Name <you@yourhost.com>
+ * This file is part of a demo that shows how to use RT2D, a 2D OpenGL framework.
  *
- * @file myscene.h
- *
- * @brief description of MyScene behavior.
+ * - Copyright 2015 Rik Teerling <rik@onandoffables.com>
+ *     - Initial commit
+ * - Copyright 2015 Your Name <you@yourhost.com>
+ *     - What you did
  */
 
-#ifndef MYSCENE_H
-#define MYSCENE_H
+#ifndef SCENE03_H
+#define SCENE03_H
 
-#include <rt2d/scene.h>
+#include <vector>
+#include <rt2d/timer.h>
+#include "superscene.h"
+#include "basicentity.h"
 
-#include "myentity.h"
-
-/// @brief The MyScene class is the Scene implementation.
-class MyScene : public Scene
+class MyScene: public SuperScene
 {
 public:
-	/// @brief Constructor
 	MyScene();
-	/// @brief Destructor
 	virtual ~MyScene();
 
-	/// @brief update is automatically called every frame
-	/// @param deltaTime the elapsed time in seconds
-	/// @return void
 	virtual void update(float deltaTime);
 
 private:
-	/// @brief the rotating square in the middle of the screen
-	MyEntity* myentity;
-	/// @brief a Timer to rotate the color every n seconds
 	Timer t;
+
+	BasicEntity* player;
+	BasicEntity* bullet;
+	BasicEntity* smoke;
+
+	void updateTank(float deltaTime);
+	void updateBullet(float deltaTime);
+	void tankShoot();
 };
 
-#endif /* SCENE00_H */
+#endif /* SCENE03_H */

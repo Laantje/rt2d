@@ -83,6 +83,7 @@ public:
 	/// @param pivoty The y component of the pivotpoint.
 	/// @return void
 	void addSprite(const std::string& filename, float pivotx, float pivoty);
+	void removeSprite();
 	/// @brief add a Sprite to this Entity.
 	/// @param filename The filename of the image you want to add as a Sprite.
 	/// @param pivotx The x component of the pivotpoint.

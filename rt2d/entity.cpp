@@ -89,6 +89,11 @@ void Entity::addSprite(Sprite* spr)
 	*_sprite = *spr;
 }
 
+void Entity::removeSprite()
+{
+	deleteSprite();
+}
+
 void Entity::addDynamicSprite(PixelBuffer* pixels)
 {
 	deleteSprite();

@@ -179,10 +179,14 @@ file(
 ####################################################################
 add_executable(start
 	start/main.cpp
+	start/basicentity.cpp
+	start/basicentity.h
 	start/myentity.cpp
 	start/myentity.h
 	start/myscene.cpp
 	start/myscene.h
+	start/superscene.cpp
+	start/superscene.h
 )
 target_link_libraries(start
 	${ALL_LIBS}

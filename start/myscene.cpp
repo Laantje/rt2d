@@ -22,13 +22,13 @@ MyScene::MyScene() : SuperScene()
 
 	// add player
 	player = new BasicEntity();
-	player->addSprite("assets/tankstand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	player->addSprite("assets/player/tankstand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	player->scale = Point2(0.5f, 0.5f);
 	player->position = Point2(SWIDTH / 3, SHEIGHT / 2);
 
 	// add enemy
 	enemy = new BasicEntity();
-	enemy->addSprite("assets/enemystand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	enemy->addSprite("assets/enemy/enemystand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	enemy->scale = Point2(0.5f, 0.5f);
 	enemy->position = Point2(SWIDTH / 3 * 2, SHEIGHT / 3 * 2);
 
@@ -47,6 +47,29 @@ MyScene::MyScene() : SuperScene()
 	// add explosion3
 	explosion3 = new BasicEntity();
 
+	// add hearts
+	heart1 = new BasicEntity();
+	heart1->addSprite("assets/hp/hp1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	heart1->scale = Point2(0.5f, 0.5f);
+	heart1->position = Point2(SWIDTH / 25 * 20, SHEIGHT / 12);
+	heart1->inUse = true;
+
+	heart2 = new BasicEntity();
+	heart2->addSprite("assets/hp/hp1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	heart2->scale = Point2(0.5f, 0.5f);
+	heart2->position = Point2(SWIDTH / 25 * 22, SHEIGHT / 12);
+	heart2->inUse = true;
+
+	heart3 = new BasicEntity();
+	heart3->addSprite("assets/hp/hp1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	heart3->scale = Point2(0.5f, 0.5f);
+	heart3->position = Point2(SWIDTH / 25 * 24, SHEIGHT / 12);
+	heart3->inUse = true;
+
+	// bullet icon
+	bicon = new BasicEntity();
+
+
 	layers[3]->addChild(player);
 	layers[4]->addChild(bullet);
 	layers[3]->addChild(enemy);
@@ -54,6 +77,10 @@ MyScene::MyScene() : SuperScene()
 	layers[6]->addChild(explosion1);
 	layers[6]->addChild(explosion2);
 	layers[6]->addChild(explosion3);
+	layers[7]->addChild(heart1);
+	layers[7]->addChild(heart2);
+	layers[7]->addChild(heart3);
+	layers[7]->addChild(bicon);
 }
 
 
@@ -66,6 +93,10 @@ MyScene::~MyScene()
 	layers[6]->removeChild(explosion1);
 	layers[6]->removeChild(explosion2);
 	layers[6]->removeChild(explosion3);
+	layers[7]->removeChild(heart1);
+	layers[7]->removeChild(heart2);
+	layers[7]->removeChild(heart3);
+	layers[7]->removeChild(bicon);
 
 	delete player;
 	delete bullet;
@@ -74,6 +105,10 @@ MyScene::~MyScene()
 	delete explosion1;
 	delete explosion2;
 	delete explosion3;
+	delete heart1;
+	delete heart2;
+	delete heart3;
+	delete bicon;
 }
 
 void MyScene::update(float deltaTime)
@@ -121,6 +156,7 @@ void MyScene::update(float deltaTime)
 	//this->updateSpaceShip(deltaTime);*/
 	this->updateTank(deltaTime);
 	this->updateBullet(deltaTime);
+	this->updateHearts(deltaTime);
 }
 
 void MyScene::updateTank(float deltaTime)
@@ -129,28 +165,28 @@ void MyScene::updateTank(float deltaTime)
 
 	if (player->isMoving) {
 		if (player->tankSprite == 0 && player->delay >= 50) {
-			player->addSprite("assets/tankride3.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+			player->addSprite("assets/player/tankride3.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 			player->tankSprite++;
 			player->delay = 0;
 		}
 		else if (player->tankSprite == 1 && player->delay >= 50) {
-			player->addSprite("assets/tankride2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+			player->addSprite("assets/player/tankride2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 			player->tankSprite++;
 			player->delay = 0;
 		}
 		else if (player->tankSprite == 2 && player->delay >= 50) {
-			player->addSprite("assets/tankride1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+			player->addSprite("assets/player/tankride1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 			player->tankSprite++;
 			player->delay = 0;
 		}
 		else if (player->tankSprite == 3 && player->delay >= 50) {
-			player->addSprite("assets/tankride2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+			player->addSprite("assets/player/tankride2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 			player->tankSprite = 0;
 			player->delay = 0;
 		}
 	}
 	else {
-		player->addSprite("assets/tankstand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		player->addSprite("assets/player/tankstand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	}
 
 	if (input()->getKey( GLFW_KEY_UP )) {
@@ -212,9 +248,9 @@ void MyScene::updateTank(float deltaTime)
 void MyScene::tankShoot()
 {
 	player->reloading = true;
-	bullet->addSprite("assets/bullet.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	bullet->addSprite("assets/bullet/bullet.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	bullet->scale = Point2(0.06f, 0.06f);
-	smoke->addSprite("assets/smoke1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	smoke->addSprite("assets/smoke/smoke1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	smoke->scale = Point2(0.3f, 0.3f);
 	if (player->facingUp) {
 		smoke->position = Point2(player->position.x + 1, player->position.y - 60);
@@ -275,19 +311,19 @@ void MyScene::updateBullet(float deltaTime)
 		}
 	}
 	if (smoke->tankSprite == 175) {
-		smoke->addSprite("assets/smoke2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		smoke->addSprite("assets/smoke/smoke2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	}
 	if (smoke->tankSprite == 140) {
-		smoke->addSprite("assets/smoke3.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		smoke->addSprite("assets/smoke/smoke3.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	}
 	if (smoke->tankSprite == 105) {
-		smoke->addSprite("assets/smoke4.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		smoke->addSprite("assets/smoke/smoke4.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	}
 	if (smoke->tankSprite == 70) {
-		smoke->addSprite("assets/smoke5.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)	
+		smoke->addSprite("assets/smoke/smoke5.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)	
 	}
 	if (smoke->tankSprite == 35) {
-		smoke->addSprite("assets/smoke6.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		smoke->addSprite("assets/smoke/smoke6.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	}
 	if (smoke->tankSprite <= 0) {
 		smoke->removeSprite();
@@ -296,12 +332,12 @@ void MyScene::updateBullet(float deltaTime)
 		smoke->tankSprite--;
 	}
 	if (player->reloading && player->shootDelay > 1150 && !player->isMoving) {
-		player->addSprite("assets/tankshoot.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		player->addSprite("assets/player/tankshoot.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	} else if (player->reloading && player->shootDelay > 1150 && player->isMoving) {
-		player->addSprite("assets/tankshootride.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		player->addSprite("assets/player/tankshootride.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	}
 	else if (!player->isMoving && player->shootDelay < 1150) {
-		player->addSprite("assets/tankstand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		player->addSprite("assets/player/tankstand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	}
 	if (player->shootDelay > 0) {
 		player->shootDelay--;
@@ -331,6 +367,283 @@ void MyScene::updateBullet(float deltaTime)
 		bullet->position.x += 1000 * deltaTime;
 		if (bullet->position.x > SWIDTH) {
 			bullet->removeSprite();
+		}
+	}
+}
+
+void MyScene::updateHearts(float deltaTime)
+{
+	//HPDELAY
+	if (hpDelay > 0) {
+		hpDelay--;
+	}
+	else if (hpDelay <= 0) {
+		hpDelay = 815;
+	}
+
+	//MAKE HEART GREY WHEN HIT
+	if (!heart1->inUse) {
+		heart1->addSprite("assets/hp/hpDead.tga", 0.5f, 0.5f, 3, 0);
+	}
+	if (!heart2->inUse) {
+		heart2->addSprite("assets/hp/hpDead.tga", 0.5f, 0.5f, 3, 0);
+	}
+	if (!heart3->inUse) {
+		heart3->addSprite("assets/hp/hpDead.tga", 0.5f, 0.5f, 3, 0);
+	}
+
+	//ANIMATOR HEARTS
+	if (hpDelay == 460) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 440) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 420) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp3.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp3.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp3.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 400) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp4.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp4.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp4.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 380) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp5.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp5.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp5.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 360) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp6.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp6.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp6.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 340) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp7.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp7.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp7.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 320) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp8.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp8.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp8.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 300) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp9.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp9.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp9.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 280) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp10.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp10.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp10.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 260) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp11.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp11.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp11.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 240) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp12.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp12.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp12.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 220) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp13.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp13.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp13.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 200) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp14.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp14.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp14.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 180) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp15.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp15.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp15.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 160) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp16.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp16.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp16.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 140) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp17.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp17.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp17.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 120) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp18.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp18.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp18.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 100) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp19.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp19.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp19.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 80) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp20.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp20.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp20.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 60) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp21.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp21.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp21.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 40) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp22.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp22.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp22.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+	if (hpDelay == 20) {
+		if (heart1->inUse) {
+			heart1->addSprite("assets/hp/hp23.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart2->inUse) {
+			heart2->addSprite("assets/hp/hp23.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+		if (heart3->inUse) {
+			heart3->addSprite("assets/hp/hp23.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 		}
 	}
 }

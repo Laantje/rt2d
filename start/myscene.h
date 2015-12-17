@@ -23,6 +23,8 @@ public:
 
 	virtual void update(float deltaTime);
 
+	int hpDelay = 815;
+
 private:
 	Timer t;
 	
@@ -31,6 +33,10 @@ private:
 
 	//items
 	BasicEntity* bullet;
+	BasicEntity* bicon;
+	BasicEntity* heart1;
+	BasicEntity* heart2;
+	BasicEntity* heart3;
 	
 	//enemies
 	BasicEntity* enemy;
@@ -46,6 +52,7 @@ private:
 	void updateBullet(float deltaTime);
 	void updateEnemy(float deltaTime);
 	void updateExplosions(float deltaTime);
+	void updateHearts(float deltaTime);
 	void tankShoot();
 };
 

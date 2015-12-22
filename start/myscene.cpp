@@ -373,6 +373,28 @@ void MyScene::updateBullet(float deltaTime)
 
 void MyScene::updateHearts(float deltaTime)
 {
+	//IN USE SWITCH
+	if (player->hp == 3) {
+		heart1->inUse = true;
+		heart2->inUse = true;
+		heart3->inUse = true;
+	}
+	else if (player->hp == 2) {
+		heart1->inUse = false;
+		heart2->inUse = true;
+		heart3->inUse = true;
+	}
+	else if (player->hp == 1) {
+		heart1->inUse = false;
+		heart2->inUse = false;
+		heart3->inUse = true;
+	}
+	else if (player->hp == 0) {
+		heart1->inUse = false;
+		heart2->inUse = false;
+		heart3->inUse = false;
+	}
+
 	//HPDELAY
 	if (hpDelay > 0) {
 		hpDelay--;

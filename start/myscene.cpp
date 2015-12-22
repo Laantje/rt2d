@@ -31,6 +31,7 @@ MyScene::MyScene() : SuperScene()
 	enemy->addSprite("assets/enemy/enemystand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	enemy->scale = Point2(0.5f, 0.5f);
 	enemy->position = Point2(SWIDTH / 3 * 2, SHEIGHT / 3 * 2);
+	enemy->delay = 400;
 
 	// add bullet
 	bullet = new BasicEntity();
@@ -157,6 +158,7 @@ void MyScene::update(float deltaTime)
 	this->updateTank(deltaTime);
 	this->updateBullet(deltaTime);
 	this->updateHearts(deltaTime);
+	this->updateEnemy(deltaTime);
 }
 
 void MyScene::updateTank(float deltaTime)
@@ -668,4 +670,36 @@ void MyScene::updateHearts(float deltaTime)
 			heart3->addSprite("assets/hp/hp23.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 		}
 	}
+}
+
+void MyScene::updateEnemy(float deltaTime)
+{
+	//Delay controller
+	if (enemy->delay > 0) {
+		enemy->delay--;
+		enemy->cpuLock = true;
+	}
+	else {
+		enemy->cpuLock = false;
+	}
+
+	//y-axis player search
+	/*if (!enemy->cpuLock && player->position.y < enemy->position.y) {
+		enemy->facingDown = true;
+		enemy->facingUp = false;
+		enemy->facingLeft = false;
+		enemy->facingRight = false;
+		while (player->position.y < enemy->position.y) {
+			enemy->position.y++;
+		}
+	}
+	else if (!enemy->cpuLock && player->position.y > enemy->position.y) {
+		enemy->facingDown = false;
+		enemy->facingUp = true;
+		enemy->facingLeft = false;
+		enemy->facingRight = false;
+		while (player->position.y > enemy->position.y) {
+			enemy->position.y++;
+		}
+	}*/
 }

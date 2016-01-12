@@ -23,13 +23,13 @@ MyScene::MyScene() : SuperScene()
 	// add player
 	player = new BasicEntity();
 	player->addSprite("assets/player/tankstand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
-	player->scale = Point2(0.5f, 0.5f);
+	player->scale = Point2(0.4f, 0.4f);
 	player->position = Point2(SWIDTH / 3, SHEIGHT / 2);
 
 	// add enemy
 	enemy = new BasicEntity();
 	enemy->addSprite("assets/enemy/enemystand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
-	enemy->scale = Point2(0.5f, 0.5f);
+	enemy->scale = Point2(0.4f, 0.4f);
 	enemy->position = Point2(SWIDTH / 3 * 2, SHEIGHT / 3 * 2);
 	enemy->delay = 400;
 
@@ -255,7 +255,7 @@ void MyScene::tankShoot()
 	smoke->addSprite("assets/smoke/smoke1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	smoke->scale = Point2(0.3f, 0.3f);
 	if (player->facingUp) {
-		smoke->position = Point2(player->position.x + 1, player->position.y - 60);
+		smoke->position = Point2(player->position.x + 1, player->position.y - 57);
 		smoke->rotation = 0 * DEG_TO_RAD;
 		bullet->position = Point2(player->position.x + 1, player->position.y - 56);
 		bullet->shotUp = true;
@@ -264,7 +264,7 @@ void MyScene::tankShoot()
 		bullet->shotRight = false;
 	}
 	else if(player->facingDown){
-		smoke->position = Point2(player->position.x - 1, player->position.y + 60);
+		smoke->position = Point2(player->position.x - 1, player->position.y + 57);
 		smoke->rotation = 180 * DEG_TO_RAD;
 		bullet->position = Point2(player->position.x - 1, player->position.y + 56);
 		bullet->shotUp = false;
@@ -273,7 +273,7 @@ void MyScene::tankShoot()
 		bullet->shotRight = false;
 	}
 	else if(player->facingLeft){
-		smoke->position = Point2(player->position.x - 60, player->position.y - 1);
+		smoke->position = Point2(player->position.x - 57, player->position.y - 1);
 		smoke->rotation = 270 * DEG_TO_RAD;
 		bullet->position = Point2(player->position.x - 56, player->position.y - 1);
 		bullet->shotUp = false;
@@ -282,7 +282,7 @@ void MyScene::tankShoot()
 		bullet->shotRight = false;
 	}
 	else if(player->facingRight){
-		smoke->position = Point2(player->position.x + 60, player->position.y + 1);
+		smoke->position = Point2(player->position.x + 57, player->position.y + 1);
 		smoke->rotation = 90 * DEG_TO_RAD;
 		bullet->position = Point2(player->position.x + 56, player->position.y + 1);
 		bullet->shotUp = false;

@@ -713,6 +713,7 @@ void MyScene::updateEnemy(float deltaTime)
 	if (!enemy->cpuLock && !enemy->AroundY && player->position.y < enemy->position.y) {
 		if (!enemy->AroundY && enemy->AboveY <= 5) {
 			enemy->AroundY = true;
+			enemy->isMoving = false;
 			enemy->delay = 250;
 		}
 		enemy->facingDown = false;
@@ -725,6 +726,7 @@ void MyScene::updateEnemy(float deltaTime)
 	else if (!enemy->cpuLock && !enemy->AroundY && player->position.y > enemy->position.y) {
 		if (!enemy->AroundY && enemy->UnderY <= 5) {
 			enemy->AroundY = true;
+			enemy->isMoving = false;
 			enemy->delay = 250;
 		}
 		enemy->facingDown = true;
@@ -751,5 +753,34 @@ void MyScene::updateEnemy(float deltaTime)
 			enemy->isMoving = false;
 			enemy->delay = 250;
 		}
+	}
+
+	//enemy isMoving
+	enemy->rideDelay++;
+
+	if (enemy->isMoving) {
+		if (enemy->tankSprite == 0 && enemy->rideDelay >= 50) {
+			enemy->addSprite("assets/enemy/enemyride3.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+			enemy->tankSprite++;
+			enemy->rideDelay = 0;
+		}
+		else if (enemy->tankSprite == 1 && enemy->rideDelay >= 50) {
+			enemy->addSprite("assets/enemy/enemyride2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+			enemy->tankSprite++;
+			enemy->rideDelay = 0;
+		}
+		else if (enemy->tankSprite == 2 && enemy->rideDelay >= 50) {
+			enemy->addSprite("assets/enemy/enemyride1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+			enemy->tankSprite++;
+			enemy->rideDelay = 0;
+		}
+		else if (enemy->tankSprite == 3 && enemy->rideDelay >= 50) {
+			enemy->addSprite("assets/enemy/enemyride2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+			enemy->tankSprite = 0;
+			enemy->rideDelay = 0;
+		}
+	}
+	else {
+		enemy->addSprite("assets/enemy/enemystand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	}
 }

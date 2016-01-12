@@ -33,6 +33,8 @@ class BasicEntity: public Entity
 		bool shotRight = false;
 		bool isShooting = false;
 		bool reloading = false;
+		bool AroundX = false;
+		bool AroundY = false;
 		int delay = 0;
 		int shotDelay = 0;
 		int tankSprite = 0;

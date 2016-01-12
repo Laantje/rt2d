@@ -701,9 +701,15 @@ void MyScene::updateEnemy(float deltaTime)
 		enemy->rotation = 270 * DEG_TO_RAD;
 	}
 
+	//If player is not around y position of enemy
+	if (enemy->AboveY >= 5 && enemy->UnderY >= 5) {
+		enemy->AroundY = false;
+	}
+
 	//y-axis player search
-	if (!enemy->cpuLock && player->position.y < enemy->position.y) {
-		if (enemy->AboveY <= 5) {
+	if (!enemy->cpuLock && !enemy->AroundY && player->position.y < enemy->position.y) {
+		if (!enemy->AroundY && enemy->AboveY <= 5) {
+			enemy->AroundY = true;
 			enemy->delay = 150;
 		}
 		enemy->facingDown = false;
@@ -711,9 +717,11 @@ void MyScene::updateEnemy(float deltaTime)
 		enemy->facingLeft = false;
 		enemy->facingRight = false;
 		enemy->position.y -= 100 * deltaTime;
+		enemy->isMoving = true;
 	}
-	else if (!enemy->cpuLock && player->position.y > enemy->position.y) {
-		if (enemy->UnderY <= 5) {
+	else if (!enemy->cpuLock && !enemy->AroundY && player->position.y > enemy->position.y) {
+		if (!enemy->AroundY && enemy->UnderY <= 5) {
+			enemy->AroundY = true;
 			enemy->delay = 150;
 		}
 		enemy->facingDown = true;
@@ -721,21 +729,22 @@ void MyScene::updateEnemy(float deltaTime)
 		enemy->facingLeft = false;
 		enemy->facingRight = false;
 		enemy->position.y += 100 * deltaTime;
+		enemy->isMoving = true;
 	}
-	else if (!enemy->cpuLock && enemy->UnderY <= 5 || !enemy->cpuLock && enemy->AboveY <= 5) {
+	else if (!enemy->cpuLock && enemy->AroundY) {
 		if (enemy->position.x > player->position.x) {
 			enemy->facingDown = false;
 			enemy->facingUp = false;
 			enemy->facingLeft = true;
 			enemy->facingRight = false;
-			enemy->delay = 150;
+			enemy->isMoving = false;
 		}
 		else if (enemy->position.x < player->position.x) {
 			enemy->facingDown = false;
 			enemy->facingUp = false;
 			enemy->facingLeft = false;
 			enemy->facingRight = true;
-			enemy->delay = 150;
+			enemy->isMoving = false;
 		}
 	}
 }

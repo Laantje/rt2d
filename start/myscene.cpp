@@ -684,22 +684,18 @@ void MyScene::updateEnemy(float deltaTime)
 	}
 
 	//y-axis player search
-	/*if (!enemy->cpuLock && player->position.y < enemy->position.y) {
+	if (!enemy->cpuLock && player->position.y < enemy->position.y) {
 		enemy->facingDown = true;
 		enemy->facingUp = false;
 		enemy->facingLeft = false;
 		enemy->facingRight = false;
-		while (player->position.y < enemy->position.y) {
-			enemy->position.y++;
-		}
+		enemy->position.y -= 125 * deltaTime;
 	}
 	else if (!enemy->cpuLock && player->position.y > enemy->position.y) {
 		enemy->facingDown = false;
 		enemy->facingUp = true;
 		enemy->facingLeft = false;
 		enemy->facingRight = false;
-		while (player->position.y > enemy->position.y) {
-			enemy->position.y++;
-		}
-	}*/
+		enemy->position.y += 125 * deltaTime;
+	}
 }

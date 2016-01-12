@@ -38,6 +38,10 @@ class BasicEntity: public Entity
 		int tankSprite = 0;
 		int shootDelay = 0;
 		int hp = 3;
+		int AboveY;
+		int UnderY;
+		int NextX;
+		int BeforeX;
 
 	private:
 };

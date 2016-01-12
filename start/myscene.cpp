@@ -674,6 +674,10 @@ void MyScene::updateHearts(float deltaTime)
 
 void MyScene::updateEnemy(float deltaTime)
 {
+	//Values for player searching
+	enemy->UnderY = player->position.y - enemy->position.y;
+	enemy->AboveY = enemy->position.y - player->position.y;
+	
 	//Delay controller
 	if (enemy->delay > 0) {
 		enemy->delay--;
@@ -699,31 +703,39 @@ void MyScene::updateEnemy(float deltaTime)
 
 	//y-axis player search
 	if (!enemy->cpuLock && player->position.y < enemy->position.y) {
+		if (enemy->AboveY <= 5) {
+			enemy->delay = 150;
+		}
 		enemy->facingDown = false;
 		enemy->facingUp = true;
 		enemy->facingLeft = false;
 		enemy->facingRight = false;
-		enemy->position.y -= 125 * deltaTime;
+		enemy->position.y -= 100 * deltaTime;
 	}
 	else if (!enemy->cpuLock && player->position.y > enemy->position.y) {
+		if (enemy->UnderY <= 5) {
+			enemy->delay = 150;
+		}
 		enemy->facingDown = true;
 		enemy->facingUp = false;
 		enemy->facingLeft = false;
 		enemy->facingRight = false;
-		enemy->position.y += 125 * deltaTime;
+		enemy->position.y += 100 * deltaTime;
 	}
-	else if (!enemy->cpuLock && player->position.y == enemy->position.y) {
+	else if (!enemy->cpuLock && enemy->UnderY <= 5 || !enemy->cpuLock && enemy->AboveY <= 5) {
 		if (enemy->position.x > player->position.x) {
 			enemy->facingDown = false;
 			enemy->facingUp = false;
 			enemy->facingLeft = true;
 			enemy->facingRight = false;
+			enemy->delay = 150;
 		}
 		else if (enemy->position.x < player->position.x) {
 			enemy->facingDown = false;
 			enemy->facingUp = false;
 			enemy->facingLeft = false;
 			enemy->facingRight = true;
+			enemy->delay = 150;
 		}
 	}
 }

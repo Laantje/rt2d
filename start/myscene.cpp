@@ -714,7 +714,7 @@ void MyScene::updateEnemy(float deltaTime)
 		if (!enemy->AroundY && enemy->AboveY <= 5) {
 			enemy->AroundY = true;
 			enemy->isMoving = false;
-			enemy->delay = 250;
+			enemy->delay = 175;
 		}
 		enemy->facingDown = false;
 		enemy->facingUp = true;
@@ -727,7 +727,7 @@ void MyScene::updateEnemy(float deltaTime)
 		if (!enemy->AroundY && enemy->UnderY <= 5) {
 			enemy->AroundY = true;
 			enemy->isMoving = false;
-			enemy->delay = 250;
+			enemy->delay = 175;
 		}
 		enemy->facingDown = true;
 		enemy->facingUp = false;
@@ -743,7 +743,7 @@ void MyScene::updateEnemy(float deltaTime)
 			enemy->facingLeft = true;
 			enemy->facingRight = false;
 			enemy->isMoving = false;
-			enemy->delay = 250;
+			enemy->delay = 175;
 		}
 		else if (enemy->position.x < player->position.x) {
 			enemy->facingDown = false;
@@ -751,14 +751,14 @@ void MyScene::updateEnemy(float deltaTime)
 			enemy->facingLeft = false;
 			enemy->facingRight = true;
 			enemy->isMoving = false;
-			enemy->delay = 250;
+			enemy->delay = 175;
 		}
 	}
 
 	//enemy isMoving
 	enemy->rideDelay++;
 
-	if (enemy->isMoving) {
+	if (enemy->isMoving && !enemy->AroundY) {
 		if (enemy->tankSprite == 0 && enemy->rideDelay >= 50) {
 			enemy->addSprite("assets/enemy/enemyride3.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 			enemy->tankSprite++;

@@ -683,19 +683,47 @@ void MyScene::updateEnemy(float deltaTime)
 		enemy->cpuLock = false;
 	}
 
+	//Rotation Controller
+	if (enemy->facingDown) {
+		enemy->rotation = 180 * DEG_TO_RAD;
+	}
+	else if (enemy->facingUp) {
+		enemy->rotation = 0 * DEG_TO_RAD;
+	}
+	else if (enemy->facingRight) {
+		enemy->rotation = 90 * DEG_TO_RAD;
+	}
+	else if (enemy->facingLeft) {
+		enemy->rotation = 270 * DEG_TO_RAD;
+	}
+
 	//y-axis player search
 	if (!enemy->cpuLock && player->position.y < enemy->position.y) {
-		enemy->facingDown = true;
-		enemy->facingUp = false;
+		enemy->facingDown = false;
+		enemy->facingUp = true;
 		enemy->facingLeft = false;
 		enemy->facingRight = false;
 		enemy->position.y -= 125 * deltaTime;
 	}
 	else if (!enemy->cpuLock && player->position.y > enemy->position.y) {
-		enemy->facingDown = false;
-		enemy->facingUp = true;
+		enemy->facingDown = true;
+		enemy->facingUp = false;
 		enemy->facingLeft = false;
 		enemy->facingRight = false;
 		enemy->position.y += 125 * deltaTime;
+	}
+	else if (!enemy->cpuLock && player->position.y == enemy->position.y) {
+		if (enemy->position.x > player->position.x) {
+			enemy->facingDown = false;
+			enemy->facingUp = false;
+			enemy->facingLeft = true;
+			enemy->facingRight = false;
+		}
+		else if (enemy->position.x < player->position.x) {
+			enemy->facingDown = false;
+			enemy->facingUp = false;
+			enemy->facingLeft = false;
+			enemy->facingRight = true;
+		}
 	}
 }

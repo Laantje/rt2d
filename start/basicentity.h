@@ -37,6 +37,7 @@ class BasicEntity: public Entity
 		bool AroundY = false;
 		bool fromDown = false;
 		bool fromUp = false;
+		bool facingPlayer = false;
 		int delay = 0;
 		int shotDelay = 0;
 		int tankSprite = 0;

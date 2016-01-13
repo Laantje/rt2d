@@ -17,6 +17,7 @@ MyScene::MyScene() : SuperScene()
 	t.start();
 
 	text[0]->message("Tankgame prototype");
+	text[2]->message("= ");
 
 	text[4]->message("<Arrow keys> move tank");
 
@@ -35,9 +36,11 @@ MyScene::MyScene() : SuperScene()
 
 	// add bullet
 	bullet = new BasicEntity();
+	bullet2 = new BasicEntity();
 
 	// add shotsmoke
-	smoke = new BasicEntity();
+	smoke1 = new BasicEntity();
+	smoke2 = new BasicEntity();
 
 	// add explosion1
 	explosion1 = new BasicEntity();
@@ -52,29 +55,34 @@ MyScene::MyScene() : SuperScene()
 	heart1 = new BasicEntity();
 	heart1->addSprite("assets/hp/hp1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	heart1->scale = Point2(0.5f, 0.5f);
-	heart1->position = Point2(SWIDTH / 25 * 20, SHEIGHT / 12);
+	heart1->position = Point2(SWIDTH / 30 * 24, SHEIGHT / 12);
 	heart1->inUse = true;
 
 	heart2 = new BasicEntity();
 	heart2->addSprite("assets/hp/hp1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	heart2->scale = Point2(0.5f, 0.5f);
-	heart2->position = Point2(SWIDTH / 25 * 22, SHEIGHT / 12);
+	heart2->position = Point2(SWIDTH / 30 * 26, SHEIGHT / 12);
 	heart2->inUse = true;
 
 	heart3 = new BasicEntity();
 	heart3->addSprite("assets/hp/hp1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	heart3->scale = Point2(0.5f, 0.5f);
-	heart3->position = Point2(SWIDTH / 25 * 24, SHEIGHT / 12);
+	heart3->position = Point2(SWIDTH / 30 * 28, SHEIGHT / 12);
 	heart3->inUse = true;
 
 	// bullet icon
 	bicon = new BasicEntity();
+	bicon->addSprite("assets/bullet/bulletsicon.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	bicon->scale = Point2(0.5f, 0.5f);
+	bicon->position = Point2(SWIDTH / 30 * 26, SHEIGHT / 11 * 2);
 
 
 	layers[3]->addChild(player);
 	layers[4]->addChild(bullet);
+	layers[4]->addChild(bullet2);
 	layers[3]->addChild(enemy);
-	layers[5]->addChild(smoke);
+	layers[5]->addChild(smoke1);
+	layers[5]->addChild(smoke2);
 	layers[6]->addChild(explosion1);
 	layers[6]->addChild(explosion2);
 	layers[6]->addChild(explosion3);
@@ -89,8 +97,10 @@ MyScene::~MyScene()
 {
 	layers[3]->removeChild(player);
 	layers[4]->removeChild(bullet);
+	layers[4]->removeChild(bullet2);
 	layers[3]->removeChild(enemy);
-	layers[5]->removeChild(smoke);
+	layers[5]->removeChild(smoke1);
+	layers[5]->removeChild(smoke2);
 	layers[6]->removeChild(explosion1);
 	layers[6]->removeChild(explosion2);
 	layers[6]->removeChild(explosion3);
@@ -101,8 +111,10 @@ MyScene::~MyScene()
 
 	delete player;
 	delete bullet;
+	delete bullet2;
 	delete enemy;
-	delete smoke;
+	delete smoke1;
+	delete smoke2;
 	delete explosion1;
 	delete explosion2;
 	delete explosion3;
@@ -234,7 +246,7 @@ void MyScene::updateTank(float deltaTime)
 	if (input()->getKeyDown(GLFW_KEY_SPACE) && !player->reloading) {
 		player->isShooting = true;
 		player->shootDelay = 1250;
-		smoke->tankSprite = 210;
+		smoke1->tankSprite = 210;
 		tankShoot();
 	}
 	else {
@@ -252,11 +264,11 @@ void MyScene::tankShoot()
 	player->reloading = true;
 	bullet->addSprite("assets/bullet/bullet.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	bullet->scale = Point2(0.06f, 0.06f);
-	smoke->addSprite("assets/smoke/smoke1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
-	smoke->scale = Point2(0.3f, 0.3f);
+	smoke1->addSprite("assets/smoke/smoke1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	smoke1->scale = Point2(0.3f, 0.3f);
 	if (player->facingUp) {
-		smoke->position = Point2(player->position.x + 1, player->position.y - 57);
-		smoke->rotation = 0 * DEG_TO_RAD;
+		smoke1->position = Point2(player->position.x + 1, player->position.y - 57);
+		smoke1->rotation = 0 * DEG_TO_RAD;
 		bullet->position = Point2(player->position.x + 1, player->position.y - 56);
 		bullet->shotUp = true;
 		bullet->shotDown = false;
@@ -264,8 +276,8 @@ void MyScene::tankShoot()
 		bullet->shotRight = false;
 	}
 	else if(player->facingDown){
-		smoke->position = Point2(player->position.x - 1, player->position.y + 57);
-		smoke->rotation = 180 * DEG_TO_RAD;
+		smoke1->position = Point2(player->position.x - 1, player->position.y + 57);
+		smoke1->rotation = 180 * DEG_TO_RAD;
 		bullet->position = Point2(player->position.x - 1, player->position.y + 56);
 		bullet->shotUp = false;
 		bullet->shotDown = true;
@@ -273,8 +285,8 @@ void MyScene::tankShoot()
 		bullet->shotRight = false;
 	}
 	else if(player->facingLeft){
-		smoke->position = Point2(player->position.x - 57, player->position.y - 1);
-		smoke->rotation = 270 * DEG_TO_RAD;
+		smoke1->position = Point2(player->position.x - 57, player->position.y - 1);
+		smoke1->rotation = 270 * DEG_TO_RAD;
 		bullet->position = Point2(player->position.x - 56, player->position.y - 1);
 		bullet->shotUp = false;
 		bullet->shotDown = false;
@@ -282,56 +294,55 @@ void MyScene::tankShoot()
 		bullet->shotRight = false;
 	}
 	else if(player->facingRight){
-		smoke->position = Point2(player->position.x + 57, player->position.y + 1);
-		smoke->rotation = 90 * DEG_TO_RAD;
+		smoke1->position = Point2(player->position.x + 57, player->position.y + 1);
+		smoke1->rotation = 90 * DEG_TO_RAD;
 		bullet->position = Point2(player->position.x + 56, player->position.y + 1);
 		bullet->shotUp = false;
 		bullet->shotDown = false;
 		bullet->shotLeft = false;
 		bullet->shotRight = true;
 	}
-	
 }
 void MyScene::updateBullet(float deltaTime)
 {
-	if (player->reloading && player->isMoving && smoke->tankSprite > 0) {
+	if (player->reloading && player->isMoving && smoke1->tankSprite > 0) {
 		if (player->facingUp) {
-			smoke->position = Point2(player->position.x + 1, player->position.y - 60);
-			smoke->rotation = 0 * DEG_TO_RAD;
+			smoke1->position = Point2(player->position.x + 1, player->position.y - 60);
+			smoke1->rotation = 0 * DEG_TO_RAD;
 		}
 		else if (player->facingDown) {
-			smoke->position = Point2(player->position.x - 1, player->position.y + 60);
-			smoke->rotation = 180 * DEG_TO_RAD;
+			smoke1->position = Point2(player->position.x - 1, player->position.y + 60);
+			smoke1->rotation = 180 * DEG_TO_RAD;
 		}
 		else if (player->facingLeft) {
-			smoke->position = Point2(player->position.x - 60, player->position.y - 1);
-			smoke->rotation = 270 * DEG_TO_RAD;
+			smoke1->position = Point2(player->position.x - 60, player->position.y - 1);
+			smoke1->rotation = 270 * DEG_TO_RAD;
 		}
 		else if (player->facingRight) {
-			smoke->position = Point2(player->position.x + 60, player->position.y + 1);
-			smoke->rotation = 90 * DEG_TO_RAD;
+			smoke1->position = Point2(player->position.x + 60, player->position.y + 1);
+			smoke1->rotation = 90 * DEG_TO_RAD;
 		}
 	}
-	if (smoke->tankSprite == 175) {
-		smoke->addSprite("assets/smoke/smoke2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	if (smoke1->tankSprite == 175) {
+		smoke1->addSprite("assets/smoke/smoke2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	}
-	if (smoke->tankSprite == 140) {
-		smoke->addSprite("assets/smoke/smoke3.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	if (smoke1->tankSprite == 140) {
+		smoke1->addSprite("assets/smoke/smoke3.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	}
-	if (smoke->tankSprite == 105) {
-		smoke->addSprite("assets/smoke/smoke4.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	if (smoke1->tankSprite == 105) {
+		smoke1->addSprite("assets/smoke/smoke4.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	}
-	if (smoke->tankSprite == 70) {
-		smoke->addSprite("assets/smoke/smoke5.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)	
+	if (smoke1->tankSprite == 70) {
+		smoke1->addSprite("assets/smoke/smoke5.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)	
 	}
-	if (smoke->tankSprite == 35) {
-		smoke->addSprite("assets/smoke/smoke6.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	if (smoke1->tankSprite == 35) {
+		smoke1->addSprite("assets/smoke/smoke6.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	}
-	if (smoke->tankSprite <= 0) {
-		smoke->removeSprite();
+	if (smoke1->tankSprite <= 0) {
+		smoke1->removeSprite();
 	}
-	if (smoke->tankSprite > 0) {
-		smoke->tankSprite--;
+	if (smoke1->tankSprite > 0) {
+		smoke1->tankSprite--;
 	}
 	if (player->reloading && player->shootDelay > 1150 && !player->isMoving) {
 		player->addSprite("assets/player/tankshoot.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
@@ -687,6 +698,10 @@ void MyScene::updateEnemy(float deltaTime)
 		enemy->cpuLock = false;
 	}
 
+	if (enemy->facingPlayer) {
+		enemyShoot();
+	}
+
 	//Rotation Controller
 	if (enemy->facingDown) {
 		enemy->rotation = 180 * DEG_TO_RAD;
@@ -743,6 +758,7 @@ void MyScene::updateEnemy(float deltaTime)
 			enemy->facingLeft = true;
 			enemy->facingRight = false;
 			enemy->isMoving = false;
+			enemy->facingPlayer = true;
 			enemy->delay = 175;
 		}
 		else if (enemy->position.x < player->position.x) {
@@ -751,7 +767,11 @@ void MyScene::updateEnemy(float deltaTime)
 			enemy->facingLeft = false;
 			enemy->facingRight = true;
 			enemy->isMoving = false;
+			enemy->facingPlayer = true;
 			enemy->delay = 175;
+		}
+		else {
+			enemy->facingPlayer = false;
 		}
 	}
 
@@ -782,5 +802,49 @@ void MyScene::updateEnemy(float deltaTime)
 	}
 	else {
 		enemy->addSprite("assets/enemy/enemystand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	}
+}
+
+void MyScene::enemyShoot() {
+	bullet2->addSprite("assets/bullet/bullet.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	bullet2->scale = Point2(0.06f, 0.06f);
+	smoke2->addSprite("assets/smoke/smoke1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	smoke2->scale = Point2(0.3f, 0.3f);
+
+	if (enemy->facingUp) {
+		smoke2->position = Point2(enemy->position.x + 1, enemy->position.y - 57);
+		smoke2->rotation = 0 * DEG_TO_RAD;
+		bullet2->position = Point2(enemy->position.x + 1, enemy->position.y - 56);
+		bullet2->shotUp = true;
+		bullet2->shotDown = false;
+		bullet2->shotLeft = false;
+		bullet2->shotRight = false;
+	}
+	else if (enemy->facingDown) {
+		smoke2->position = Point2(enemy->position.x - 1, enemy->position.y + 57);
+		smoke2->rotation = 180 * DEG_TO_RAD;
+		bullet2->position = Point2(enemy->position.x - 1, enemy->position.y + 56);
+		bullet2->shotUp = false;
+		bullet2->shotDown = true;
+		bullet2->shotLeft = false;
+		bullet2->shotRight = false;
+	}
+	else if (enemy->facingLeft) {
+		smoke2->position = Point2(enemy->position.x - 57, enemy->position.y - 1);
+		smoke2->rotation = 270 * DEG_TO_RAD;
+		bullet2->position = Point2(enemy->position.x - 56, enemy->position.y - 1);
+		bullet2->shotUp = false;
+		bullet2->shotDown = false;
+		bullet2->shotLeft = true;
+		bullet2->shotRight = false;
+	}
+	else if (enemy->facingRight) {
+		smoke2->position = Point2(enemy->position.x + 57, enemy->position.y + 1);
+		smoke2->rotation = 90 * DEG_TO_RAD;
+		bullet2->position = Point2(enemy->position.x + 56, enemy->position.y + 1);
+		bullet2->shotUp = false;
+		bullet2->shotDown = false;
+		bullet2->shotLeft = false;
+		bullet2->shotRight = true;
 	}
 }

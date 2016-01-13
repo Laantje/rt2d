@@ -33,6 +33,7 @@ private:
 
 	//items
 	BasicEntity* bullet;
+	BasicEntity* bullet2;
 	BasicEntity* bicon;
 	BasicEntity* heart1;
 	BasicEntity* heart2;
@@ -42,7 +43,8 @@ private:
 	BasicEntity* enemy;
 	
 	//particles
-	BasicEntity* smoke;
+	BasicEntity* smoke1;
+	BasicEntity* smoke2;
 	BasicEntity* explosion1;
 	BasicEntity* explosion2;
 	BasicEntity* explosion3;
@@ -54,6 +56,7 @@ private:
 	void updateExplosions(float deltaTime);
 	void updateHearts(float deltaTime);
 	void tankShoot();
+	void enemyShoot();
 };
 
 #endif /* SCENE03_H */

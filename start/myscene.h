@@ -49,6 +49,9 @@ private:
 	BasicEntity* explosion2;
 	BasicEntity* explosion3;
 
+	//vector
+	std::vector<BasicEntity*> bullets;
+
 	//functions
 	void updateTank(float deltaTime);
 	void updateBullet(float deltaTime);

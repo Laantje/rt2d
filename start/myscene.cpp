@@ -34,7 +34,8 @@ MyScene::MyScene() : SuperScene()
 	enemy->position = Point2(SWIDTH / 3 * 2, SHEIGHT / 3 * 2);
 	enemy->delay = 400;
 
-	// add bullet
+	// add bullets
+	std::vector<BasicEntity*> bullets;
 	bullet = new BasicEntity();
 	bullet2 = new BasicEntity();
 
@@ -108,6 +109,12 @@ MyScene::~MyScene()
 	layers[7]->removeChild(heart2);
 	layers[7]->removeChild(heart3);
 	layers[7]->removeChild(bicon);
+
+	for (int i = 0; i < bullets.size(); i++) {
+		delete bullets[i]; // delete Bullet from the heap (a pointer to it is still in the list)
+		bullets[i] = NULL; // set Bullet pointer to NULL (don't try to remove it from the list)
+	}
+	bullets.clear(); // list contains only NULL pointers. Make the list empty with 1 command.
 
 	delete player;
 	delete bullet;
@@ -262,47 +269,51 @@ void MyScene::updateTank(float deltaTime)
 void MyScene::tankShoot()
 {
 	player->reloading = true;
-	bullet->addSprite("assets/bullet/bullet.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
-	bullet->scale = Point2(0.06f, 0.06f);
+	BasicEntity* b = new BasicEntity();
+	b->addSprite("assets/bullet/bullet.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	b->scale = Point2(0.06f, 0.06f);
 	smoke1->addSprite("assets/smoke/smoke1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	smoke1->scale = Point2(0.3f, 0.3f);
 	if (player->facingUp) {
 		smoke1->position = Point2(player->position.x + 1, player->position.y - 57);
 		smoke1->rotation = 0 * DEG_TO_RAD;
-		bullet->position = Point2(player->position.x + 1, player->position.y - 56);
-		bullet->shotUp = true;
-		bullet->shotDown = false;
-		bullet->shotLeft = false;
-		bullet->shotRight = false;
+		b->position = Point2(player->position.x + 1, player->position.y - 56);
+		b->shotUp = true;
+		b->shotDown = false;
+		b->shotLeft = false;
+		b->shotRight = false;
 	}
 	else if(player->facingDown){
 		smoke1->position = Point2(player->position.x - 1, player->position.y + 57);
 		smoke1->rotation = 180 * DEG_TO_RAD;
-		bullet->position = Point2(player->position.x - 1, player->position.y + 56);
-		bullet->shotUp = false;
-		bullet->shotDown = true;
-		bullet->shotLeft = false;
-		bullet->shotRight = false;
+		b->position = Point2(player->position.x - 1, player->position.y + 56);
+		b->shotUp = false;
+		b->shotDown = true;
+		b->shotLeft = false;
+		b->shotRight = false;
 	}
 	else if(player->facingLeft){
 		smoke1->position = Point2(player->position.x - 57, player->position.y - 1);
 		smoke1->rotation = 270 * DEG_TO_RAD;
-		bullet->position = Point2(player->position.x - 56, player->position.y - 1);
-		bullet->shotUp = false;
-		bullet->shotDown = false;
-		bullet->shotLeft = true;
-		bullet->shotRight = false;
+		b->position = Point2(player->position.x - 56, player->position.y - 1);
+		b->shotUp = false;
+		b->shotDown = false;
+		b->shotLeft = true;
+		b->shotRight = false;
 	}
 	else if(player->facingRight){
 		smoke1->position = Point2(player->position.x + 57, player->position.y + 1);
 		smoke1->rotation = 90 * DEG_TO_RAD;
-		bullet->position = Point2(player->position.x + 56, player->position.y + 1);
-		bullet->shotUp = false;
-		bullet->shotDown = false;
-		bullet->shotLeft = false;
-		bullet->shotRight = true;
+		b->position = Point2(player->position.x + 56, player->position.y + 1);
+		b->shotUp = false;
+		b->shotDown = false;
+		b->shotLeft = false;
+		b->shotRight = true;
 	}
+	layers[4]->addChild(b);
+	bullets.push_back(b);
 }
+
 void MyScene::updateBullet(float deltaTime)
 {
 	if (player->reloading && player->isMoving && smoke1->tankSprite > 0) {
@@ -358,7 +369,7 @@ void MyScene::updateBullet(float deltaTime)
 	if (player->reloading && player->shootDelay <= 0) {
 		player->reloading = false;
 	}
-	if (player->reloading && bullet->shotUp) {
+	/*if (player->reloading && bullet->shotUp) {
 		bullet->position.y -= 1000 * deltaTime;
 		if (bullet->position.y < 0) {
 			bullet->removeSprite();
@@ -380,6 +391,46 @@ void MyScene::updateBullet(float deltaTime)
 		bullet->position.x += 1000 * deltaTime;
 		if (bullet->position.x > SWIDTH) {
 			bullet->removeSprite();
+		}
+	}*/
+
+	std::vector<BasicEntity*>::iterator it = bullets.begin(); // get the 'iterator' from the list.
+	while (it != bullets.end()) {
+		if ((*it)->shotUp) {
+			(*it)->position.y -= 1000 * deltaTime;
+		}
+		else if ((*it)->shotDown) {
+			(*it)->position.y += 1000 * deltaTime;
+		}
+		else if ((*it)->shotLeft) {
+			(*it)->position.x -= 1000 * deltaTime;
+		}
+		else if ((*it)->shotRight) {
+			(*it)->position.x += 1000 * deltaTime;
+		}
+
+		if ((*it)->position.y < 0 && (*it)->shotUp) {
+			layers[4]->removeChild(*it);
+			delete (*it); // delete the Bullet
+			it = bullets.erase(it); // 'remove' from bullet list
+		}
+		else if ((*it)->position.y > SHEIGHT && (*it)->shotDown) {
+			layers[4]->removeChild(*it);
+			delete (*it); // delete the Bullet
+			it = bullets.erase(it); // 'remove' from bullet list
+		}
+		else if ((*it)->position.x < 0 && (*it)->shotLeft) {
+			layers[4]->removeChild(*it);
+			delete (*it); // delete the Bullet
+			it = bullets.erase(it); // 'remove' from bullet list
+		}
+		else if ((*it)->position.x > SWIDTH && (*it)->shotRight) {
+			layers[4]->removeChild(*it);
+			delete (*it); // delete the Bullet
+			it = bullets.erase(it); // 'remove' from bullet list
+		}
+		else {
+			++it;
 		}
 	}
 

@@ -382,6 +382,80 @@ void MyScene::updateBullet(float deltaTime)
 			bullet->removeSprite();
 		}
 	}
+
+	//ENEMY BULLET
+	if (enemy->reloading && enemy->isMoving && smoke2->tankSprite > 0) {
+		if (enemy->facingUp) {
+			smoke2->position = Point2(enemy->position.x + 1, enemy->position.y - 60);
+			smoke2->rotation = 0 * DEG_TO_RAD;
+		}
+		else if (enemy->facingDown) {
+			smoke2->position = Point2(enemy->position.x - 1, enemy->position.y + 60);
+			smoke2->rotation = 180 * DEG_TO_RAD;
+		}
+		else if (enemy->facingLeft) {
+			smoke2->position = Point2(enemy->position.x - 60, enemy->position.y - 1);
+			smoke2->rotation = 270 * DEG_TO_RAD;
+		}
+		else if (enemy->facingRight) {
+			smoke2->position = Point2(enemy->position.x + 60, enemy->position.y + 1);
+			smoke2->rotation = 90 * DEG_TO_RAD;
+		}
+	}
+	if (smoke2->tankSprite == 175) {
+		smoke2->addSprite("assets/smoke/smoke2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	}
+	if (smoke2->tankSprite == 140) {
+		smoke2->addSprite("assets/smoke/smoke3.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	}
+	if (smoke2->tankSprite == 105) {
+		smoke2->addSprite("assets/smoke/smoke4.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	}
+	if (smoke2->tankSprite == 70) {
+		smoke2->addSprite("assets/smoke/smoke5.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)	
+	}
+	if (smoke2->tankSprite == 35) {
+		smoke2->addSprite("assets/smoke/smoke6.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	}
+	if (smoke2->tankSprite <= 0) {
+		smoke2->removeSprite();
+	}
+	if (smoke2->tankSprite > 0) {
+		smoke2->tankSprite--;
+	}
+
+	if (enemy->reloading && enemy->shootDelay <= 0) {
+		enemy->reloading = false;
+	}
+
+	if (enemy->shootDelay > 0) {
+		enemy->shootDelay--;
+	}
+
+	if (enemy->reloading && bullet2->shotUp) {
+		bullet2->position.y -= 1000 * deltaTime;
+		if (bullet2->position.y < 0) {
+			bullet2->removeSprite();
+		}
+	}
+	else if (enemy->reloading && bullet2->shotDown) {
+		bullet2->position.y += 1000 * deltaTime;
+		if (bullet2->position.y > SHEIGHT) {
+			bullet2->removeSprite();
+		}
+	}
+	else if (enemy->reloading && bullet2->shotLeft) {
+		bullet2->position.x -= 1000 * deltaTime;
+		if (bullet2->position.x < 0) {
+			bullet2->removeSprite();
+		}
+	}
+	else if (enemy->reloading && bullet2->shotRight) {
+		bullet2->position.x += 1000 * deltaTime;
+		if (bullet2->position.x > SWIDTH) {
+			bullet2->removeSprite();
+		}
+	}
 }
 
 void MyScene::updateHearts(float deltaTime)
@@ -735,6 +809,7 @@ void MyScene::updateEnemy(float deltaTime)
 		enemy->facingUp = true;
 		enemy->facingLeft = false;
 		enemy->facingRight = false;
+		enemy->facingPlayer = false;
 		enemy->position.y -= 100 * deltaTime;
 		enemy->isMoving = true;
 	}
@@ -748,6 +823,7 @@ void MyScene::updateEnemy(float deltaTime)
 		enemy->facingUp = false;
 		enemy->facingLeft = false;
 		enemy->facingRight = false;
+		enemy->facingPlayer = false;
 		enemy->position.y += 100 * deltaTime;
 		enemy->isMoving = true;
 	}
@@ -769,9 +845,6 @@ void MyScene::updateEnemy(float deltaTime)
 			enemy->isMoving = false;
 			enemy->facingPlayer = true;
 			enemy->delay = 175;
-		}
-		else {
-			enemy->facingPlayer = false;
 		}
 	}
 
@@ -806,12 +879,19 @@ void MyScene::updateEnemy(float deltaTime)
 }
 
 void MyScene::enemyShoot() {
-	bullet2->addSprite("assets/bullet/bullet.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
-	bullet2->scale = Point2(0.06f, 0.06f);
-	smoke2->addSprite("assets/smoke/smoke1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
-	smoke2->scale = Point2(0.3f, 0.3f);
+	if (!enemy->reloading) {
+		smoke2->tankSprite = 210;
+		enemy->shootDelay = 1250;
+	}
 
-	if (enemy->facingUp) {
+	if (!enemy->reloading) {
+		bullet2->addSprite("assets/bullet/bullet.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		bullet2->scale = Point2(0.06f, 0.06f);
+		smoke2->addSprite("assets/smoke/smoke1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		smoke2->scale = Point2(0.3f, 0.3f);
+	}
+
+	if (enemy->facingUp && !enemy->reloading) {
 		smoke2->position = Point2(enemy->position.x + 1, enemy->position.y - 57);
 		smoke2->rotation = 0 * DEG_TO_RAD;
 		bullet2->position = Point2(enemy->position.x + 1, enemy->position.y - 56);
@@ -820,7 +900,7 @@ void MyScene::enemyShoot() {
 		bullet2->shotLeft = false;
 		bullet2->shotRight = false;
 	}
-	else if (enemy->facingDown) {
+	else if (enemy->facingDown && !enemy->reloading) {
 		smoke2->position = Point2(enemy->position.x - 1, enemy->position.y + 57);
 		smoke2->rotation = 180 * DEG_TO_RAD;
 		bullet2->position = Point2(enemy->position.x - 1, enemy->position.y + 56);
@@ -829,7 +909,7 @@ void MyScene::enemyShoot() {
 		bullet2->shotLeft = false;
 		bullet2->shotRight = false;
 	}
-	else if (enemy->facingLeft) {
+	else if (enemy->facingLeft && !enemy->reloading) {
 		smoke2->position = Point2(enemy->position.x - 57, enemy->position.y - 1);
 		smoke2->rotation = 270 * DEG_TO_RAD;
 		bullet2->position = Point2(enemy->position.x - 56, enemy->position.y - 1);
@@ -838,7 +918,7 @@ void MyScene::enemyShoot() {
 		bullet2->shotLeft = true;
 		bullet2->shotRight = false;
 	}
-	else if (enemy->facingRight) {
+	else if (enemy->facingRight && !enemy->reloading) {
 		smoke2->position = Point2(enemy->position.x + 57, enemy->position.y + 1);
 		smoke2->rotation = 90 * DEG_TO_RAD;
 		bullet2->position = Point2(enemy->position.x + 56, enemy->position.y + 1);
@@ -846,5 +926,8 @@ void MyScene::enemyShoot() {
 		bullet2->shotDown = false;
 		bullet2->shotLeft = false;
 		bullet2->shotRight = true;
+	}
+	if (!enemy->reloading) {
+		enemy->reloading = true;
 	}
 }

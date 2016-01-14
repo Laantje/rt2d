@@ -795,16 +795,6 @@ void MyScene::updateEnemy(float deltaTime)
 
 	//Check which way is the fastest to the player
 	if (enemy->position.x > player->position.x && enemy->position.y > player->position.y) {
-		if (enemy->BeforeX < enemy->UnderY) {
-			enemy->PreferX = true;
-			enemy->PreferY = false;
-		}
-		else {
-			enemy->PreferX = false;
-			enemy->PreferY = true;
-		}
-	}
-	else if (enemy->position.x > player->position.x && enemy->position.y < player->position.y) {
 		if (enemy->BeforeX < enemy->AboveY) {
 			enemy->PreferX = true;
 			enemy->PreferY = false;
@@ -814,8 +804,8 @@ void MyScene::updateEnemy(float deltaTime)
 			enemy->PreferY = true;
 		}
 	}
-	else if (enemy->position.x < player->position.x && enemy->position.y > player->position.y) {
-		if (enemy->NextX < enemy->UnderY) {
+	else if (enemy->position.x > player->position.x && enemy->position.y < player->position.y) {
+		if (enemy->BeforeX < enemy->UnderY) {
 			enemy->PreferX = true;
 			enemy->PreferY = false;
 		}
@@ -824,7 +814,7 @@ void MyScene::updateEnemy(float deltaTime)
 			enemy->PreferY = true;
 		}
 	}
-	else if (enemy->position.x < player->position.x && enemy->position.y < player->position.y) {
+	else if (enemy->position.x < player->position.x && enemy->position.y > player->position.y) {
 		if (enemy->NextX < enemy->AboveY) {
 			enemy->PreferX = true;
 			enemy->PreferY = false;
@@ -834,6 +824,17 @@ void MyScene::updateEnemy(float deltaTime)
 			enemy->PreferY = true;
 		}
 	}
+	else if (enemy->position.x < player->position.x && enemy->position.y < player->position.y) {
+		if (enemy->NextX < enemy->UnderY) {
+			enemy->PreferX = true;
+			enemy->PreferY = false;
+		}
+		else {
+			enemy->PreferX = false;
+			enemy->PreferY = true;
+		}
+	}
+	std::cout << enemy->PreferX;
 
 
 	//If player is not around y position of enemy

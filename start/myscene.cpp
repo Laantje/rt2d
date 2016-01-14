@@ -25,7 +25,7 @@ MyScene::MyScene() : SuperScene()
 	player = new BasicEntity();
 	player->addSprite("assets/player/tankstand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	player->scale = Point2(0.4f, 0.4f);
-	player->position = Point2(SWIDTH / 3, SHEIGHT / 2);
+	player->position = Point2(SWIDTH / 4 * 2, SHEIGHT / 3);
 
 	// add enemy
 	enemy = new BasicEntity();
@@ -762,6 +762,9 @@ void MyScene::updateEnemy(float deltaTime)
 	//Values for player searching
 	enemy->UnderY = player->position.y - enemy->position.y;
 	enemy->AboveY = enemy->position.y - player->position.y;
+
+	enemy->NextX = player->position.x - enemy->position.x;
+	enemy->BeforeX = enemy->position.x - player->position.x;
 	
 	//Delay controller
 	if (enemy->delay > 0) {
@@ -790,6 +793,49 @@ void MyScene::updateEnemy(float deltaTime)
 		enemy->rotation = 270 * DEG_TO_RAD;
 	}
 
+	//Check which way is the fastest to the player
+	if (enemy->position.x > player->position.x && enemy->position.y > player->position.y) {
+		if (enemy->BeforeX < enemy->UnderY) {
+			enemy->PreferX = true;
+			enemy->PreferY = false;
+		}
+		else {
+			enemy->PreferX = false;
+			enemy->PreferY = true;
+		}
+	}
+	else if (enemy->position.x > player->position.x && enemy->position.y < player->position.y) {
+		if (enemy->BeforeX < enemy->AboveY) {
+			enemy->PreferX = true;
+			enemy->PreferY = false;
+		}
+		else {
+			enemy->PreferX = false;
+			enemy->PreferY = true;
+		}
+	}
+	else if (enemy->position.x < player->position.x && enemy->position.y > player->position.y) {
+		if (enemy->NextX < enemy->UnderY) {
+			enemy->PreferX = true;
+			enemy->PreferY = false;
+		}
+		else {
+			enemy->PreferX = false;
+			enemy->PreferY = true;
+		}
+	}
+	else if (enemy->position.x < player->position.x && enemy->position.y < player->position.y) {
+		if (enemy->NextX < enemy->AboveY) {
+			enemy->PreferX = true;
+			enemy->PreferY = false;
+		}
+		else {
+			enemy->PreferX = false;
+			enemy->PreferY = true;
+		}
+	}
+
+
 	//If player is not around y position of enemy
 	if (enemy->AboveY >= 5 && !enemy->cpuLock) {
 		enemy->AroundY = false;
@@ -798,8 +844,66 @@ void MyScene::updateEnemy(float deltaTime)
 		enemy->AroundY = false;
 	}
 
+	//If player is not around x position of enemy
+	if (enemy->BeforeX >= 5 && !enemy->cpuLock) {
+		enemy->AroundX = false;
+	}
+	if (enemy->NextX >= 5 && !enemy->cpuLock) {
+		enemy->AroundX = false;
+	}
+
+	//x-axis player search
+	if (!enemy->cpuLock && !enemy->AroundX && player->position.x < enemy->position.x && enemy->PreferX) {
+		if (!enemy->AroundX && enemy->BeforeX <= 5) {
+			enemy->AroundX = true;
+			enemy->isMoving = false;
+			enemy->delay = 175;
+		}
+		enemy->facingDown = false;
+		enemy->facingUp = false;
+		enemy->facingLeft = true;
+		enemy->facingRight = false;
+		enemy->facingPlayer = false;
+		enemy->position.x -= 100 * deltaTime;
+		enemy->isMoving = true;
+	}
+	else if (!enemy->cpuLock && !enemy->AroundX && player->position.x > enemy->position.x && enemy->PreferX) {
+		if (!enemy->AroundX && enemy->NextX <= 5) {
+			enemy->AroundX = true;
+			enemy->isMoving = false;
+			enemy->delay = 175;
+		}
+		enemy->facingDown = false;
+		enemy->facingUp = false;
+		enemy->facingLeft = false;
+		enemy->facingRight = true;
+		enemy->facingPlayer = false;
+		enemy->position.x += 100 * deltaTime;
+		enemy->isMoving = true;
+	}
+	else if (!enemy->cpuLock && enemy->AroundX) {
+		if (enemy->position.y > player->position.y) {
+			enemy->facingDown = false;
+			enemy->facingUp = true;
+			enemy->facingLeft = false;
+			enemy->facingRight = false;
+			enemy->isMoving = false;
+			enemy->facingPlayer = true;
+			enemy->delay = 175;
+		}
+		else if (enemy->position.y < player->position.y) {
+			enemy->facingDown = true;
+			enemy->facingUp = false;
+			enemy->facingLeft = false;
+			enemy->facingRight = false;
+			enemy->isMoving = false;
+			enemy->facingPlayer = true;
+			enemy->delay = 175;
+		}
+	}
+
 	//y-axis player search
-	if (!enemy->cpuLock && !enemy->AroundY && player->position.y < enemy->position.y) {
+	if (!enemy->cpuLock && !enemy->AroundY && player->position.y < enemy->position.y && enemy->PreferY) {
 		if (!enemy->AroundY && enemy->AboveY <= 5) {
 			enemy->AroundY = true;
 			enemy->isMoving = false;
@@ -813,7 +917,7 @@ void MyScene::updateEnemy(float deltaTime)
 		enemy->position.y -= 100 * deltaTime;
 		enemy->isMoving = true;
 	}
-	else if (!enemy->cpuLock && !enemy->AroundY && player->position.y > enemy->position.y) {
+	else if (!enemy->cpuLock && !enemy->AroundY && player->position.y > enemy->position.y && enemy->PreferY) {
 		if (!enemy->AroundY && enemy->UnderY <= 5) {
 			enemy->AroundY = true;
 			enemy->isMoving = false;

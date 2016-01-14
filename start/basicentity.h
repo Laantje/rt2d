@@ -35,6 +35,8 @@ class BasicEntity: public Entity
 		bool reloading = false;
 		bool AroundX = false;
 		bool AroundY = false;
+		bool PreferX = false;
+		bool PreferY = false;
 		bool fromDown = false;
 		bool fromUp = false;
 		bool facingPlayer = false;

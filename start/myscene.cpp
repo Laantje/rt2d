@@ -17,7 +17,6 @@ MyScene::MyScene() : SuperScene()
 	t.start();
 
 	text[0]->message("Tankgame prototype");
-	text[2]->message("= ");
 
 	text[4]->message("<Arrow keys> move tank");
 
@@ -27,7 +26,8 @@ MyScene::MyScene() : SuperScene()
 	player->scale = Point2(0.4f, 0.4f);
 	player->position = Point2(SWIDTH / 4 * 2, SHEIGHT / 3);
 
-	// add enemy
+	// add enemies
+	std::vector<BasicEntity*> enemies;
 	enemy = new BasicEntity();
 	enemy->addSprite("assets/enemy/enemystand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	enemy->scale = Point2(0.4f, 0.4f);
@@ -39,18 +39,13 @@ MyScene::MyScene() : SuperScene()
 	bullet = new BasicEntity();
 	bullet2 = new BasicEntity();
 
-	// add shotsmoke
+	// add shotsmokes
+	std::vector<BasicEntity*> smokes;
 	smoke1 = new BasicEntity();
 	smoke2 = new BasicEntity();
 
-	// add explosion1
-	explosion1 = new BasicEntity();
-
-	// add explosion2
-	explosion2 = new BasicEntity();
-
-	// add explosion3
-	explosion3 = new BasicEntity();
+	// add explosions
+	std::vector<BasicEntity*> explosions;
 
 	// add hearts
 	heart1 = new BasicEntity();
@@ -84,9 +79,6 @@ MyScene::MyScene() : SuperScene()
 	layers[3]->addChild(enemy);
 	layers[5]->addChild(smoke1);
 	layers[5]->addChild(smoke2);
-	layers[6]->addChild(explosion1);
-	layers[6]->addChild(explosion2);
-	layers[6]->addChild(explosion3);
 	layers[7]->addChild(heart1);
 	layers[7]->addChild(heart2);
 	layers[7]->addChild(heart3);
@@ -102,19 +94,38 @@ MyScene::~MyScene()
 	layers[3]->removeChild(enemy);
 	layers[5]->removeChild(smoke1);
 	layers[5]->removeChild(smoke2);
-	layers[6]->removeChild(explosion1);
-	layers[6]->removeChild(explosion2);
-	layers[6]->removeChild(explosion3);
 	layers[7]->removeChild(heart1);
 	layers[7]->removeChild(heart2);
 	layers[7]->removeChild(heart3);
 	layers[7]->removeChild(bicon);
 
+	//Delete bullets
 	for (int i = 0; i < bullets.size(); i++) {
 		delete bullets[i]; // delete Bullet from the heap (a pointer to it is still in the list)
 		bullets[i] = NULL; // set Bullet pointer to NULL (don't try to remove it from the list)
 	}
 	bullets.clear(); // list contains only NULL pointers. Make the list empty with 1 command.
+
+	//Delete enemies
+	for (int i = 0; i < enemies.size(); i++) {
+		delete enemies[i]; // delete Bullet from the heap (a pointer to it is still in the list)
+		enemies[i] = NULL; // set Bullet pointer to NULL (don't try to remove it from the list)
+	}
+	enemies.clear(); // list contains only NULL pointers. Make the list empty with 1 command.
+
+	//Delete explosions
+	for (int i = 0; i < explosions.size(); i++) {
+		delete explosions[i]; // delete Bullet from the heap (a pointer to it is still in the list)
+		explosions[i] = NULL; // set Bullet pointer to NULL (don't try to remove it from the list)
+	}
+	explosions.clear(); // list contains only NULL pointers. Make the list empty with 1 command.
+
+	//Delete smokes
+	for (int i = 0; i < smokes.size(); i++) {
+		delete smokes[i]; // delete Bullet from the heap (a pointer to it is still in the list)
+		smokes[i] = NULL; // set Bullet pointer to NULL (don't try to remove it from the list)
+	}
+	smokes.clear(); // list contains only NULL pointers. Make the list empty with 1 command.
 
 	delete player;
 	delete bullet;
@@ -122,9 +133,6 @@ MyScene::~MyScene()
 	delete enemy;
 	delete smoke1;
 	delete smoke2;
-	delete explosion1;
-	delete explosion2;
-	delete explosion3;
 	delete heart1;
 	delete heart2;
 	delete heart3;
@@ -826,7 +834,7 @@ void MyScene::updateEnemy(float deltaTime)
 		enemy->cpuLock = false;
 	}
 
-	if (enemy->facingPlayer) {
+	if (enemy->facingPlayer && !enemy->reloading) {
 		enemyShoot();
 	}
 
@@ -885,7 +893,6 @@ void MyScene::updateEnemy(float deltaTime)
 			enemy->PreferY = true;
 		}
 	}
-	std::cout << enemy->PreferX;
 
 
 	//If player is not around y position of enemy
@@ -1035,14 +1042,15 @@ void MyScene::updateEnemy(float deltaTime)
 }
 
 void MyScene::enemyShoot() {
+	BasicEntity* b = new BasicEntity();
 	if (!enemy->reloading) {
 		smoke2->tankSprite = 210;
 		enemy->shootDelay = 1250;
 	}
 
 	if (!enemy->reloading) {
-		bullet2->addSprite("assets/bullet/bullet.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
-		bullet2->scale = Point2(0.06f, 0.06f);
+		b->addSprite("assets/bullet/bullet.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		b->scale = Point2(0.06f, 0.06f);
 		smoke2->addSprite("assets/smoke/smoke1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 		smoke2->scale = Point2(0.3f, 0.3f);
 	}
@@ -1050,40 +1058,42 @@ void MyScene::enemyShoot() {
 	if (enemy->facingUp && !enemy->reloading) {
 		smoke2->position = Point2(enemy->position.x + 1, enemy->position.y - 57);
 		smoke2->rotation = 0 * DEG_TO_RAD;
-		bullet2->position = Point2(enemy->position.x + 1, enemy->position.y - 56);
-		bullet2->shotUp = true;
-		bullet2->shotDown = false;
-		bullet2->shotLeft = false;
-		bullet2->shotRight = false;
+		b->position = Point2(enemy->position.x + 1, enemy->position.y - 56);
+		b->shotUp = true;
+		b->shotDown = false;
+		b->shotLeft = false;
+		b->shotRight = false;
 	}
 	else if (enemy->facingDown && !enemy->reloading) {
 		smoke2->position = Point2(enemy->position.x - 1, enemy->position.y + 57);
 		smoke2->rotation = 180 * DEG_TO_RAD;
-		bullet2->position = Point2(enemy->position.x - 1, enemy->position.y + 56);
-		bullet2->shotUp = false;
-		bullet2->shotDown = true;
-		bullet2->shotLeft = false;
-		bullet2->shotRight = false;
+		b->position = Point2(enemy->position.x - 1, enemy->position.y + 56);
+		b->shotUp = false;
+		b->shotDown = true;
+		b->shotLeft = false;
+		b->shotRight = false;
 	}
 	else if (enemy->facingLeft && !enemy->reloading) {
 		smoke2->position = Point2(enemy->position.x - 57, enemy->position.y - 1);
 		smoke2->rotation = 270 * DEG_TO_RAD;
-		bullet2->position = Point2(enemy->position.x - 56, enemy->position.y - 1);
-		bullet2->shotUp = false;
-		bullet2->shotDown = false;
-		bullet2->shotLeft = true;
-		bullet2->shotRight = false;
+		b->position = Point2(enemy->position.x - 56, enemy->position.y - 1);
+		b->shotUp = false;
+		b->shotDown = false;
+		b->shotLeft = true;
+		b->shotRight = false;
 	}
 	else if (enemy->facingRight && !enemy->reloading) {
 		smoke2->position = Point2(enemy->position.x + 57, enemy->position.y + 1);
 		smoke2->rotation = 90 * DEG_TO_RAD;
-		bullet2->position = Point2(enemy->position.x + 56, enemy->position.y + 1);
-		bullet2->shotUp = false;
-		bullet2->shotDown = false;
-		bullet2->shotLeft = false;
-		bullet2->shotRight = true;
+		b->position = Point2(enemy->position.x + 56, enemy->position.y + 1);
+		b->shotUp = false;
+		b->shotDown = false;
+		b->shotLeft = false;
+		b->shotRight = true;
 	}
 	if (!enemy->reloading) {
 		enemy->reloading = true;
 	}
+	layers[4]->addChild(b);
+	bullets.push_back(b);
 }

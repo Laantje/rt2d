@@ -51,6 +51,9 @@ private:
 
 	//vector
 	std::vector<BasicEntity*> bullets;
+	std::vector<BasicEntity*> explosions;
+	std::vector<BasicEntity*> smokes;
+	std::vector<BasicEntity*> enemies;
 
 	//functions
 	void updateTank(float deltaTime);

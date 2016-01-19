@@ -42,3 +42,30 @@ Menu::~Menu()
 	delete creditsb;
 	delete quitb;
 }
+
+void Menu::update(float deltaTime)
+{
+	// ###############################################################
+	// Make SuperScene do what it needs to do (Escape key stops Scene)
+	// ###############################################################
+	SuperScene::update(deltaTime);
+
+	this->updateStart(deltaTime);
+	this->updateCredits(deltaTime);
+	this->updateQuit(deltaTime);
+}
+
+void Menu::updateStart(float deltaTime)
+{
+	
+}
+
+void Menu::updateCredits(float deltaTime)
+{
+
+}
+
+void Menu::updateQuit(float deltaTime)
+{
+
+}

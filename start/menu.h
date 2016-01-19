@@ -21,6 +21,11 @@ public:
 
 private:
 	Timer t;
+
+	//buttons
+	BasicEntity* startb;
+	BasicEntity* creditsb;
+	BasicEntity* quitb;
 };
 
 #endif /* MENU_H */

@@ -18,8 +18,27 @@
 #include "menu.h"
 Menu::Menu() : SuperScene()
 {
+	// start button
+	startb = new BasicEntity();
+
+	// credits button
+	creditsb = new BasicEntity();
+
+	// quit button
+	quitb = new BasicEntity();
+
+	layers[5]->addChild(startb);
+	layers[5]->addChild(creditsb);
+	layers[5]->addChild(quitb);
 }
 
-Menu::~MyScene()
+Menu::~Menu()
 {
+	layers[5]->removeChild(startb);
+	layers[5]->removeChild(creditsb);
+	layers[5]->removeChild(quitb);
+
+	delete startb;
+	delete creditsb;
+	delete quitb;
 }

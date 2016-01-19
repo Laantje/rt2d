@@ -187,6 +187,8 @@ add_executable(start
 	start/myscene.h
 	start/superscene.cpp
 	start/superscene.h
+	start/menu.h
+	start/menu.cpp
 )
 target_link_libraries(start
 	${ALL_LIBS}

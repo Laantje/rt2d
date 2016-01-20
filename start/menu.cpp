@@ -125,6 +125,7 @@ void Menu::update(float deltaTime)
 		startb->sprite()->color.a = 127;
 		if (input()->getMouseDown(0)) {
 			startb->sprite()->color = RGBAColor(192, 192, 192, 255);
+			SuperScene::activescene = 2;
 		}
 		if (input()->getMouseDown(1)) {
 			startb->sprite()->color = RGBAColor(64, 64, 64, 255);
@@ -142,6 +143,7 @@ void Menu::update(float deltaTime)
 		creditsb->sprite()->color.a = 127;
 		if (input()->getMouseDown(0)) {
 			creditsb->sprite()->color = RGBAColor(192, 192, 192, 255);
+			SuperScene::activescene = 1;
 		}
 		if (input()->getMouseDown(1)) {
 			creditsb->sprite()->color = RGBAColor(64, 64, 64, 255);
@@ -159,9 +161,11 @@ void Menu::update(float deltaTime)
 		quitb->sprite()->color.a = 127;
 		if (input()->getMouseDown(0)) {
 			quitb->sprite()->color = RGBAColor(192, 192, 192, 255);
+			SuperScene::stop();
 		}
 		if (input()->getMouseDown(1)) {
 			quitb->sprite()->color = RGBAColor(64, 64, 64, 255);
+			
 		}
 		if (input()->getMouseDown(2)) {
 			quitb->sprite()->color = GRAY;

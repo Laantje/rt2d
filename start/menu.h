@@ -22,6 +22,10 @@ public:
 private:
 	Timer t;
 
+	//ints
+	int buttonwidth;
+	int buttonheight;
+
 	//buttons
 	BasicEntity* startb;
 	BasicEntity* creditsb;

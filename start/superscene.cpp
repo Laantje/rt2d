@@ -9,7 +9,7 @@
 
 #include "superscene.h"
 
-int SuperScene::activescene = 3;
+int SuperScene::activescene = 0;
 
 SuperScene::SuperScene() : Scene()
 {
@@ -74,10 +74,10 @@ void SuperScene::update(float deltaTime)
 	// ###############################################################
 	// '[' and ']' switch scenes
 	// ###############################################################
-	if (input()->getKeyUp( GLFW_KEY_LEFT_BRACKET )) {
+	if (input()->getKeyUp(GLFW_KEY_LEFT_BRACKET)) {
 		activescene--;
 	}
-	if (input()->getKeyUp( GLFW_KEY_RIGHT_BRACKET )) {
+	if (input()->getKeyUp(GLFW_KEY_RIGHT_BRACKET)) {
 		activescene++;
 	}
 
@@ -98,7 +98,7 @@ void SuperScene::update(float deltaTime)
 	// ###############################################################
 	static int framecounter = 0;
 	if (fpstimer.seconds() > 1.0f) {
-		std::string fpstxt = "FPS: ";
+		std::string fpstxt = "SuperScene FPS: ";
 		fpstxt.append(std::to_string(framecounter));
 		text[1]->message(fpstxt);
 		framecounter = 0;

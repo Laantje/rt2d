@@ -19,20 +19,26 @@
 Menu::Menu() : SuperScene()
 {
 	// Button width & Height
-	buttonwidth = 250;
-	buttonheight = 100;
+	buttonwidth = 256;
+	buttonheight = 102;
 
 	// start button
 	startb = new BasicEntity();
 	startb->position = Point2(SWIDTH / 2, SHEIGHT / 12 * 5);
+	startb->addSprite("assets/buttons/start.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	startb->scale = Point2(1, 1);
 
 	// credits button
 	creditsb = new BasicEntity();
 	creditsb->position = Point2(SWIDTH / 2, SHEIGHT / 12 * 7);
+	creditsb->addSprite("assets/buttons/credits.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	creditsb->scale = Point2(1, 1);
 
 	// quit button
 	quitb = new BasicEntity();
 	quitb->position = Point2(SWIDTH / 2, SHEIGHT / 12 * 9);
+	quitb->addSprite("assets/buttons/quit.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	quitb->scale = Point2(1, 1);
 
 	layers[5]->addChild(startb);
 	layers[5]->addChild(creditsb);
@@ -134,23 +140,4 @@ void Menu::update(float deltaTime)
 	else {
 		quitb->sprite()->color.a = 255;
 	}
-
-	this->updateStart(deltaTime);
-	this->updateCredits(deltaTime);
-	this->updateQuit(deltaTime);
-}
-
-void Menu::updateStart(float deltaTime)
-{
-	
-}
-
-void Menu::updateCredits(float deltaTime)
-{
-
-}
-
-void Menu::updateQuit(float deltaTime)
-{
-
 }

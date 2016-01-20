@@ -15,11 +15,11 @@
 #include "superscene.h"
 #include "basicentity.h"
 
-class MyScene: public SuperScene
+class Level1: public SuperScene
 {
 public:
-	MyScene();
-	virtual ~MyScene();
+	Level1();
+	virtual ~Level1();
 
 	virtual void update(float deltaTime);
 

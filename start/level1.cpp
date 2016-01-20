@@ -8,11 +8,11 @@
  */
 
 #include <time.h>
-#include "myscene.h"
+#include "Level1.h"
 
 RGBAColor colors[10] = { WHITE, GRAY, RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, PINK, MAGENTA };
 
-MyScene::MyScene() : SuperScene()
+Level1::Level1() : SuperScene()
 {
 	t.start();
 
@@ -86,7 +86,7 @@ MyScene::MyScene() : SuperScene()
 }
 
 
-MyScene::~MyScene()
+Level1::~Level1()
 {
 	layers[3]->removeChild(player);
 	layers[4]->removeChild(bullet);
@@ -139,7 +139,7 @@ MyScene::~MyScene()
 	delete bicon;
 }
 
-void MyScene::update(float deltaTime)
+void Level1::update(float deltaTime)
 {
 	// ###############################################################
 	// Make SuperScene do what it needs to do (Escape key stops Scene)
@@ -188,7 +188,7 @@ void MyScene::update(float deltaTime)
 	this->updateEnemy(deltaTime);
 }
 
-void MyScene::updateTank(float deltaTime)
+void Level1::updateTank(float deltaTime)
 {
 	player->delay++;
 
@@ -274,7 +274,7 @@ void MyScene::updateTank(float deltaTime)
 	if (player->position.y > SHEIGHT) { player->position.y = 0; }
 }
 
-void MyScene::tankShoot()
+void Level1::tankShoot()
 {
 	player->reloading = true;
 	BasicEntity* b = new BasicEntity();
@@ -322,7 +322,7 @@ void MyScene::tankShoot()
 	bullets.push_back(b);
 }
 
-void MyScene::updateBullet(float deltaTime)
+void Level1::updateBullet(float deltaTime)
 {
 	if (player->reloading && player->isMoving && smoke1->tankSprite > 0) {
 		if (player->facingUp) {
@@ -517,7 +517,7 @@ void MyScene::updateBullet(float deltaTime)
 	}
 }
 
-void MyScene::updateHearts(float deltaTime)
+void Level1::updateHearts(float deltaTime)
 {
 	//IN USE SWITCH
 	if (player->hp == 3) {
@@ -816,7 +816,7 @@ void MyScene::updateHearts(float deltaTime)
 	}
 }
 
-void MyScene::updateEnemy(float deltaTime)
+void Level1::updateEnemy(float deltaTime)
 {
 	//Values for player searching
 	enemy->UnderY = player->position.y - enemy->position.y;
@@ -1041,7 +1041,7 @@ void MyScene::updateEnemy(float deltaTime)
 	}
 }
 
-void MyScene::enemyShoot() {
+void Level1::enemyShoot() {
 	BasicEntity* b = new BasicEntity();
 	if (!enemy->reloading) {
 		smoke2->tankSprite = 210;

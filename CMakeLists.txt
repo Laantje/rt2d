@@ -183,8 +183,8 @@ add_executable(start
 	start/basicentity.h
 	start/myentity.cpp
 	start/myentity.h
-	start/myscene.cpp
-	start/myscene.h
+	start/level1.cpp
+	start/level1.h
 	start/superscene.cpp
 	start/superscene.h
 	start/menu.h

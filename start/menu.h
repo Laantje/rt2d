@@ -30,11 +30,6 @@ private:
 	BasicEntity* startb;
 	BasicEntity* creditsb;
 	BasicEntity* quitb;
-
-	//functions
-	void updateStart(float deltaTime);
-	void updateCredits(float deltaTime);
-	void updateQuit(float deltaTime);
 };
 
 #endif /* MENU_H */

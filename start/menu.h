@@ -30,6 +30,10 @@ private:
 	BasicEntity* startb;
 	BasicEntity* creditsb;
 	BasicEntity* quitb;
+	BasicEntity* logo;
+
+	//floats
+	float size;
 };
 
 #endif /* MENU_H */

@@ -16,7 +16,7 @@
 #include <rt2d/core.h>
 
 #include "instruct.h"
-Instruct::Credits() : SuperScene()
+Instruct::Instruct() : SuperScene()
 {
 	/*
 	// Button width & Height
@@ -47,7 +47,7 @@ Instruct::Credits() : SuperScene()
 	*/
 }
 
-Instruct::~Credits()
+Instruct::~Instruct()
 {
 	/*
 	layers[5]->removeChild(startb);

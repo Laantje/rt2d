@@ -17,6 +17,9 @@
 
 #include "level1.h"
 #include "menu.h"
+#include "credits.h"
+#include "instruct.h"
+
 
 /// @brief main entry point
 int main( void )
@@ -27,6 +30,8 @@ int main( void )
 	// Create all scenes on the heap and keep a list
 	std::vector<SuperScene*> scenes;
 	scenes.push_back(new Menu());
+	scenes.push_back(new Credits());
+	scenes.push_back(new Instruct());
 	scenes.push_back(new Level1());
 	int s = scenes.size();
 

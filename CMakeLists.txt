@@ -189,6 +189,10 @@ add_executable(start
 	start/superscene.h
 	start/menu.h
 	start/menu.cpp
+	start/credits.cpp
+	start/credits.h
+	start/instruct.cpp
+	start/instruct.h
 )
 target_link_libraries(start
 	${ALL_LIBS}

@@ -18,14 +18,21 @@
 #include "menu.h"
 Menu::Menu() : SuperScene()
 {
+	// Button width & Height
+	buttonwidth = 250;
+	buttonheight = 100;
+
 	// start button
 	startb = new BasicEntity();
+	startb->position = Point2(SWIDTH / 2, SHEIGHT / 12 * 5);
 
 	// credits button
 	creditsb = new BasicEntity();
+	creditsb->position = Point2(SWIDTH / 2, SHEIGHT / 12 * 7);
 
 	// quit button
 	quitb = new BasicEntity();
+	quitb->position = Point2(SWIDTH / 2, SHEIGHT / 12 * 9);
 
 	layers[5]->addChild(startb);
 	layers[5]->addChild(creditsb);

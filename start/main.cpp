@@ -28,7 +28,7 @@ int main( void )
 	Menu* menu = new Menu(); // create Scene on the heap
 	MyScene* myscene = new MyScene(); // create Scene on the heap
 	while(myscene->isRunning()) { // check status of Scene every frame
-		core.run(myscene); // update and render the current scene
+		core.run(menu); // update and render the current scene
 		core.showFrameRate(5); // show framerate in output every n seconds
 	}
 	//core.cleanup(); // cleanup ResourceManager (Textures + Meshes, but not Shaders)

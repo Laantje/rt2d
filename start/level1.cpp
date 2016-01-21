@@ -182,6 +182,7 @@ void Level1::update(float deltaTime)
 	this->updateBullet(deltaTime);
 	this->updateHearts(deltaTime);
 	this->updateEnemy(deltaTime);
+	this->updateExplosions(deltaTime);
 }
 
 void Level1::updateTank(float deltaTime)
@@ -466,6 +467,12 @@ void Level1::updateBullet(float deltaTime)
 			player->hitDelay = 100;
 			player->isHit = true;
 			player->hp--;
+			BasicEntity* e = new BasicEntity();
+			e->position = Point2((*it)->position.x, (*it)->position.y);
+			e->scale = Point2(0.4f, 0.4f);
+			e->delay = 180;
+			layers[6]->addChild(e);
+			explosions.push_back(e);
 			layers[4]->removeChild(*it);
 			delete (*it); // delete the Bullet
 			it = bullets.erase(it); // 'remove' from bullet list
@@ -850,6 +857,47 @@ void Level1::updateHearts(float deltaTime)
 		}
 		if (heart3->inUse) {
 			heart3->addSprite("assets/hp/hp23.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
+	}
+}
+
+void Level1::updateExplosions(float deltaTime) {
+	std::vector<BasicEntity*>::iterator ite = explosions.begin(); // get the 'iterator' from the list.
+	while (ite != explosions.end()) {
+		if ((*ite)->delay == 180) {
+			(*ite)->addSprite("assets/explosion/expl1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+			(*ite)->delay--;
+		}
+		else if ((*ite)->delay == 150) {
+			(*ite)->addSprite("assets/explosion/expl2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+			(*ite)->delay--;
+		}
+		else if ((*ite)->delay == 120) {
+			(*ite)->addSprite("assets/explosion/expl3.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+			(*ite)->delay--;
+		}
+		else if ((*ite)->delay == 90) {
+			(*ite)->addSprite("assets/explosion/expl4.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+			(*ite)->delay--;
+		}
+		else if ((*ite)->delay == 60) {
+			(*ite)->addSprite("assets/explosion/expl5.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+			(*ite)->delay--;
+		}
+		else if ((*ite)->delay == 30) {
+			(*ite)->addSprite("assets/explosion/expl6.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+			(*ite)->delay--;
+		}
+		else if ((*ite)->delay > 0) {
+			(*ite)->delay--;
+		}
+		else if ((*ite)->delay <= 0) {
+			layers[6]->removeChild(*ite);
+			delete (*ite); // delete the Bullet
+			ite = explosions.erase(ite); // 'remove' from bullet list
+		}
+		else {
+			++ite;
 		}
 	}
 }

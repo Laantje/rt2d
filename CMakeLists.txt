@@ -193,6 +193,8 @@ add_executable(start
 	start/credits.h
 	start/instruct.cpp
 	start/instruct.h
+	start/gameover.cpp
+	start/gameover.h
 )
 target_link_libraries(start
 	${ALL_LIBS}

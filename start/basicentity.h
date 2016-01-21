@@ -23,6 +23,7 @@ class BasicEntity: public Entity
 
 		// Booleans
 		bool isMoving = false;
+		bool isHit = false;
 		bool cpuLock = false;
 		bool inUse = false;
 		bool facingUp = true;
@@ -49,6 +50,7 @@ class BasicEntity: public Entity
 		int tankSprite = 0;
 		int shootDelay = 0;
 		int rideDelay = 0;
+		int hitDelay = 0;
 		int hp = 3;
 		int AboveY;
 		int UnderY;

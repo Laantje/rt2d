@@ -26,6 +26,9 @@ Level1::Level1() : SuperScene()
 	player->addSprite("assets/player/tankstand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	player->scale = Point2(0.4f, 0.4f);
 	player->position = Point2(SWIDTH / 4 * 2, SHEIGHT / 3);
+	player->halfHeight = 32;
+	player->halfWidth = 35;
+	
 
 	// add enemies
 	std::vector<BasicEntity*> enemies;
@@ -261,6 +264,25 @@ void Level1::updateTank(float deltaTime)
 		player->isShooting = false;
 	}
 
+	//Collisions
+	player->eLeft = player->position.x - player->halfWidth;
+	player->eRight = player->position.x + player->halfWidth;
+	player->eTop = player->position.y - player->halfHeight;
+	player->eBottom = player->position.y + player->halfHeight;
+
+	//Hit detection
+	if (player->isHit && player->hitDelay > 0 && player->isMoving) {
+		player->addSprite("assets/player/tankridehit.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	}
+	else if (player->isHit && player->hitDelay > 0 && !player->isMoving) {
+		player->addSprite("assets/player/tankhit.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	}
+	
+	if (player->hitDelay > 0) {
+		player->hitDelay--;
+		player->isHit = false;
+	}
+
 	if (player->position.x < 0) { player->position.x = SWIDTH; }
 	if (player->position.x > SWIDTH) { player->position.x = 0; }
 	if (player->position.y < 0) { player->position.y = SHEIGHT; }
@@ -400,6 +422,11 @@ void Level1::updateBullet(float deltaTime)
 	//Bullet iterator
 	std::vector<BasicEntity*>::iterator it = bullets.begin(); // get the 'iterator' from the list.
 	while (it != bullets.end()) {
+		(*it)->eLeft = (*it)->position.x - (*it)->halfWidth;
+		(*it)->eRight = (*it)->position.x + (*it)->halfWidth;
+		(*it)->eTop = (*it)->position.y - (*it)->halfHeight;
+		(*it)->eBottom = (*it)->position.y + (*it)->halfHeight;
+
 		if ((*it)->shotUp) {
 			(*it)->position.y -= 1000 * deltaTime;
 		}
@@ -411,13 +438,6 @@ void Level1::updateBullet(float deltaTime)
 		}
 		else if ((*it)->shotRight) {
 			(*it)->position.x += 1000 * deltaTime;
-		}
-
-		if (player->position.x > (*it)->eLeft && player->position.x < (*it)->eRight && player->position.y >(*it)->eTop && player->position.y < (*it)->eBottom) {
-			player->hp--;
-			layers[4]->removeChild(*it);
-			delete (*it); // delete the Bullet
-			it = bullets.erase(it); // 'remove' from bullet list
 		}
 
 		if ((*it)->position.y < 0 && (*it)->shotUp) {
@@ -436,6 +456,14 @@ void Level1::updateBullet(float deltaTime)
 			it = bullets.erase(it); // 'remove' from bullet list
 		}
 		else if ((*it)->position.x > SWIDTH && (*it)->shotRight) {
+			layers[4]->removeChild(*it);
+			delete (*it); // delete the Bullet
+			it = bullets.erase(it); // 'remove' from bullet list
+		}
+		else if ((*it)->eLeft > player->eLeft && (*it)->eRight < player->eRight && (*it)->eTop > player->eTop && (*it)->eBottom < player->eBottom) {
+			//if (player->position.x < (*it)->eLeft && player->position.x < (*it)->eRight && player->position.y >(*it)->eTop && player->position.y < (*it)->eBottom) {
+			player->hp--;
+			player->hitDelay = 100;
 			layers[4]->removeChild(*it);
 			delete (*it); // delete the Bullet
 			it = bullets.erase(it); // 'remove' from bullet list
@@ -1054,12 +1082,8 @@ void Level1::enemyShoot() {
 	if (!enemy->reloading) {
 		b->addSprite("assets/bullet/bullet.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 		b->scale = Point2(0.06f, 0.06f);
-		b->halfHeight = 30;
-		b->halfWidth = 30;
-		b->eLeft = b->position.x - b->halfWidth;
-		b->eRight = b->position.x + b->halfWidth;
-		b->eTop = b->position.y - b->halfHeight;
-		b->eBottom = b->position.y + b->halfHeight;
+		b->halfHeight = 6;
+		b->halfWidth = 6;
 		smoke2->addSprite("assets/smoke/smoke1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 		smoke2->scale = Point2(0.3f, 0.3f);
 	}

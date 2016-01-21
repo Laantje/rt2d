@@ -7,6 +7,7 @@
  *     - What you did
  */
 
+#include <time.h>
 #include "basicentity.h"
 
 BasicEntity::BasicEntity()

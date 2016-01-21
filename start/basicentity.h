@@ -12,6 +12,7 @@
 #define BASICENTITY_H
 
 #include <rt2d/entity.h>
+#include <rt2d/timer.h>
 
 class BasicEntity: public Entity
 {

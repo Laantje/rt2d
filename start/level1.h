@@ -31,6 +31,10 @@ private:
 	//player
 	BasicEntity* player;
 
+	//ints
+	int explosionTimer;
+	int smokeTimer;
+
 	//items
 	BasicEntity* bullet;
 	BasicEntity* bullet2;

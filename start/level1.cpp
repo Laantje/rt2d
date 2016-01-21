@@ -469,7 +469,7 @@ void Level1::updateBullet(float deltaTime)
 			player->hp--;
 			BasicEntity* e = new BasicEntity();
 			e->position = Point2((*it)->position.x, (*it)->position.y);
-			e->scale = Point2(0.4f, 0.4f);
+			e->scale = Point2(0.3f, 0.3f);
 			e->delay = 180;
 			layers[6]->addChild(e);
 			explosions.push_back(e);
@@ -864,32 +864,25 @@ void Level1::updateHearts(float deltaTime)
 void Level1::updateExplosions(float deltaTime) {
 	std::vector<BasicEntity*>::iterator ite = explosions.begin(); // get the 'iterator' from the list.
 	while (ite != explosions.end()) {
-		if ((*ite)->delay == 180) {
+		std::cout << (*ite)->delay;
+		(*ite)->delay--;
+		if ((*ite)->delay > 179) {
 			(*ite)->addSprite("assets/explosion/expl1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
-			(*ite)->delay--;
 		}
-		else if ((*ite)->delay == 150) {
+		else if ((*ite)->delay > 149 && (*ite)->delay < 151) {
 			(*ite)->addSprite("assets/explosion/expl2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
-			(*ite)->delay--;
 		}
-		else if ((*ite)->delay == 120) {
+		else if ((*ite)->delay > 119 && (*ite)->delay < 121) {
 			(*ite)->addSprite("assets/explosion/expl3.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
-			(*ite)->delay--;
 		}
-		else if ((*ite)->delay == 90) {
+		else if ((*ite)->delay > 89 && (*ite)->delay < 91) {
 			(*ite)->addSprite("assets/explosion/expl4.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
-			(*ite)->delay--;
 		}
-		else if ((*ite)->delay == 60) {
+		else if ((*ite)->delay > 59 && (*ite)->delay < 61) {
 			(*ite)->addSprite("assets/explosion/expl5.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
-			(*ite)->delay--;
 		}
-		else if ((*ite)->delay == 30) {
+		else if ((*ite)->delay > 29 && (*ite)->delay < 31) {
 			(*ite)->addSprite("assets/explosion/expl6.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
-			(*ite)->delay--;
-		}
-		else if ((*ite)->delay > 0) {
-			(*ite)->delay--;
 		}
 		else if ((*ite)->delay <= 0) {
 			layers[6]->removeChild(*ite);

@@ -210,7 +210,7 @@ void Level1::updateTank(float deltaTime)
 			player->delay = 0;
 		}
 	}
-	else {
+	else if (!player->isMoving && !player->isHit) {
 		player->addSprite("assets/player/tankstand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	}
 
@@ -280,6 +280,8 @@ void Level1::updateTank(float deltaTime)
 	
 	if (player->hitDelay > 0) {
 		player->hitDelay--;
+	}
+	else if (player->hitDelay <= 0) {
 		player->isHit = false;
 	}
 
@@ -385,7 +387,7 @@ void Level1::updateBullet(float deltaTime)
 	} else if (player->reloading && player->shootDelay > 1150 && player->isMoving) {
 		player->addSprite("assets/player/tankshootride.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	}
-	else if (!player->isMoving && player->shootDelay < 1150) {
+	else if (!player->isMoving && player->shootDelay < 1150 && player->reloading) {
 		player->addSprite("assets/player/tankstand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	}
 	if (player->shootDelay > 0) {
@@ -461,9 +463,9 @@ void Level1::updateBullet(float deltaTime)
 			it = bullets.erase(it); // 'remove' from bullet list
 		}
 		else if ((*it)->eLeft > player->eLeft && (*it)->eRight < player->eRight && (*it)->eTop > player->eTop && (*it)->eBottom < player->eBottom) {
-			//if (player->position.x < (*it)->eLeft && player->position.x < (*it)->eRight && player->position.y >(*it)->eTop && player->position.y < (*it)->eBottom) {
-			player->hp--;
 			player->hitDelay = 100;
+			player->isHit = true;
+			player->hp--;
 			layers[4]->removeChild(*it);
 			delete (*it); // delete the Bullet
 			it = bullets.erase(it); // 'remove' from bullet list

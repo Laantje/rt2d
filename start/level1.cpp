@@ -14,6 +14,7 @@ RGBAColor colors[10] = { WHITE, GRAY, RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, PI
 
 Level1::Level1() : SuperScene()
 {
+
 	t.start();
 
 	text[0]->message("Tankgame prototype");
@@ -36,8 +37,6 @@ Level1::Level1() : SuperScene()
 
 	// add bullets
 	std::vector<BasicEntity*> bullets;
-	bullet = new BasicEntity();
-	bullet2 = new BasicEntity();
 
 	// add shotsmokes
 	std::vector<BasicEntity*> smokes;
@@ -74,8 +73,6 @@ Level1::Level1() : SuperScene()
 
 
 	layers[3]->addChild(player);
-	layers[4]->addChild(bullet);
-	layers[4]->addChild(bullet2);
 	layers[3]->addChild(enemy);
 	layers[5]->addChild(smoke1);
 	layers[5]->addChild(smoke2);
@@ -89,8 +86,6 @@ Level1::Level1() : SuperScene()
 Level1::~Level1()
 {
 	layers[3]->removeChild(player);
-	layers[4]->removeChild(bullet);
-	layers[4]->removeChild(bullet2);
 	layers[3]->removeChild(enemy);
 	layers[5]->removeChild(smoke1);
 	layers[5]->removeChild(smoke2);
@@ -128,8 +123,6 @@ Level1::~Level1()
 	smokes.clear(); // list contains only NULL pointers. Make the list empty with 1 command.
 
 	delete player;
-	delete bullet;
-	delete bullet2;
 	delete enemy;
 	delete smoke1;
 	delete smoke2;
@@ -280,6 +273,8 @@ void Level1::tankShoot()
 	BasicEntity* b = new BasicEntity();
 	b->addSprite("assets/bullet/bullet.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	b->scale = Point2(0.06f, 0.06f);
+	b->halfHeight = 6;
+	b->halfWidth = 6;
 	smoke1->addSprite("assets/smoke/smoke1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	smoke1->scale = Point2(0.3f, 0.3f);
 	if (player->facingUp) {
@@ -402,6 +397,7 @@ void Level1::updateBullet(float deltaTime)
 		}
 	}*/
 
+	//Bullet iterator
 	std::vector<BasicEntity*>::iterator it = bullets.begin(); // get the 'iterator' from the list.
 	while (it != bullets.end()) {
 		if ((*it)->shotUp) {
@@ -415,6 +411,13 @@ void Level1::updateBullet(float deltaTime)
 		}
 		else if ((*it)->shotRight) {
 			(*it)->position.x += 1000 * deltaTime;
+		}
+
+		if (player->position.x > (*it)->eLeft && player->position.x < (*it)->eRight && player->position.y >(*it)->eTop && player->position.y < (*it)->eBottom) {
+			player->hp--;
+			layers[4]->removeChild(*it);
+			delete (*it); // delete the Bullet
+			it = bullets.erase(it); // 'remove' from bullet list
 		}
 
 		if ((*it)->position.y < 0 && (*it)->shotUp) {
@@ -491,7 +494,7 @@ void Level1::updateBullet(float deltaTime)
 		enemy->shootDelay--;
 	}
 
-	if (enemy->reloading && bullet2->shotUp) {
+	/*if (enemy->reloading && bullet2->shotUp) {
 		bullet2->position.y -= 1000 * deltaTime;
 		if (bullet2->position.y < 0) {
 			bullet2->removeSprite();
@@ -514,7 +517,7 @@ void Level1::updateBullet(float deltaTime)
 		if (bullet2->position.x > SWIDTH) {
 			bullet2->removeSprite();
 		}
-	}
+	}*/
 }
 
 void Level1::updateHearts(float deltaTime)
@@ -1051,6 +1054,12 @@ void Level1::enemyShoot() {
 	if (!enemy->reloading) {
 		b->addSprite("assets/bullet/bullet.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 		b->scale = Point2(0.06f, 0.06f);
+		b->halfHeight = 30;
+		b->halfWidth = 30;
+		b->eLeft = b->position.x - b->halfWidth;
+		b->eRight = b->position.x + b->halfWidth;
+		b->eTop = b->position.y - b->halfHeight;
+		b->eBottom = b->position.y + b->halfHeight;
 		smoke2->addSprite("assets/smoke/smoke1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 		smoke2->scale = Point2(0.3f, 0.3f);
 	}

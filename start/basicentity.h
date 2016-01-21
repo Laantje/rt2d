@@ -21,6 +21,7 @@ class BasicEntity: public Entity
 
 		virtual void update(float deltaTime);
 
+		// Booleans
 		bool isMoving = false;
 		bool cpuLock = false;
 		bool inUse = false;
@@ -41,6 +42,8 @@ class BasicEntity: public Entity
 		bool fromDown = false;
 		bool fromUp = false;
 		bool facingPlayer = false;
+
+		// Ints
 		int delay = 0;
 		int shotDelay = 0;
 		int tankSprite = 0;
@@ -51,6 +54,16 @@ class BasicEntity: public Entity
 		int UnderY;
 		int NextX;
 		int BeforeX;
+
+		//Collision ints
+		int halfWidth;
+		int halfHeight;
+
+		//Collision Sides
+		int eLeft;
+		int eRight;
+		int eTop;
+		int eBottom;
 
 	private:
 };

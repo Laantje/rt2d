@@ -866,22 +866,22 @@ void Level1::updateExplosions(float deltaTime) {
 	while (ite != explosions.end()) {
 		std::cout << (*ite)->delay;
 		(*ite)->delay--;
-		if ((*ite)->delay > 179) {
+		if ((*ite)->delay == 180) {
 			(*ite)->addSprite("assets/explosion/expl1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 		}
-		else if ((*ite)->delay > 149 && (*ite)->delay < 151) {
+		else if ((*ite)->delay == 150) {
 			(*ite)->addSprite("assets/explosion/expl2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 		}
-		else if ((*ite)->delay > 119 && (*ite)->delay < 121) {
+		else if ((*ite)->delay == 120) {
 			(*ite)->addSprite("assets/explosion/expl3.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 		}
-		else if ((*ite)->delay > 89 && (*ite)->delay < 91) {
+		else if ((*ite)->delay == 90) {
 			(*ite)->addSprite("assets/explosion/expl4.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 		}
-		else if ((*ite)->delay > 59 && (*ite)->delay < 61) {
+		else if ((*ite)->delay == 60) {
 			(*ite)->addSprite("assets/explosion/expl5.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 		}
-		else if ((*ite)->delay > 29 && (*ite)->delay < 31) {
+		else if ((*ite)->delay == 30) {
 			(*ite)->addSprite("assets/explosion/expl6.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 		}
 		else if ((*ite)->delay <= 0) {

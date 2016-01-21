@@ -49,6 +49,11 @@ Menu::Menu() : SuperScene()
 	quitb->addSprite("assets/buttons/quit.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	quitb->scale = Point2(1, 1);
 
+	//string
+	char CopyrightChar = '\xa9';
+	std::string copyright = "David Laan, Rik Teerling - 2015";
+	text[15]->message(copyright);
+
 	layers[5]->addChild(startb);
 	layers[5]->addChild(creditsb);
 	layers[5]->addChild(quitb);
@@ -123,15 +128,9 @@ void Menu::update(float deltaTime)
 	//If mouse is on startbutton
 	if (mousex > sleft && mousex < sright && mousey > stop && mousey < sbottom) {
 		startb->sprite()->color.a = 127;
-		if (input()->getMouseDown(0)) {
+		if (input()->getMouseUp(0)) {
 			startb->sprite()->color = RGBAColor(192, 192, 192, 255);
 			SuperScene::activescene = 2;
-		}
-		if (input()->getMouseDown(1)) {
-			startb->sprite()->color = RGBAColor(64, 64, 64, 255);
-		}
-		if (input()->getMouseDown(2)) {
-			startb->sprite()->color = GRAY;
 		}
 	}
 	else {
@@ -141,15 +140,9 @@ void Menu::update(float deltaTime)
 	//If mouse is on creditsbutton
 	if (mousex > cleft && mousex < cright && mousey > ctop && mousey < cbottom) {
 		creditsb->sprite()->color.a = 127;
-		if (input()->getMouseDown(0)) {
+		if (input()->getMouseUp(0)) {
 			creditsb->sprite()->color = RGBAColor(192, 192, 192, 255);
 			SuperScene::activescene = 1;
-		}
-		if (input()->getMouseDown(1)) {
-			creditsb->sprite()->color = RGBAColor(64, 64, 64, 255);
-		}
-		if (input()->getMouseDown(2)) {
-			creditsb->sprite()->color = GRAY;
 		}
 	}
 	else {
@@ -159,16 +152,9 @@ void Menu::update(float deltaTime)
 	//If mouse is on quitbutton
 	if (mousex > qleft && mousex < qright && mousey > qtop && mousey < qbottom) {
 		quitb->sprite()->color.a = 127;
-		if (input()->getMouseDown(0)) {
+		if (input()->getMouseUp(0)) {
 			quitb->sprite()->color = RGBAColor(192, 192, 192, 255);
 			SuperScene::stop();
-		}
-		if (input()->getMouseDown(1)) {
-			quitb->sprite()->color = RGBAColor(64, 64, 64, 255);
-			
-		}
-		if (input()->getMouseDown(2)) {
-			quitb->sprite()->color = GRAY;
 		}
 	}
 	else {

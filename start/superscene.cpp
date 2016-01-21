@@ -72,6 +72,13 @@ void SuperScene::update(float deltaTime)
 	}
 
 	// ###############################################################
+	// Enter key goes to the menu
+	// ###############################################################
+	if (input()->getKeyUp(GLFW_KEY_ENTER) && activescene != 0) {
+		activescene = 0;
+	}
+
+	// ###############################################################
 	// '[' and ']' switch scenes
 	// ###############################################################
 	if (input()->getKeyUp(GLFW_KEY_LEFT_BRACKET)) {

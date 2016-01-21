@@ -8,7 +8,7 @@
  */
 
 #include <time.h>
-#include "Level1.h"
+#include "level1.h"
 
 RGBAColor colors[10] = { WHITE, GRAY, RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, PINK, MAGENTA };
 

@@ -1,3 +1,4 @@
+
 /**
  * This file is part of a demo that shows how to use RT2D, a 2D OpenGL framework.
  *

@@ -31,7 +31,7 @@ int main( void )
 	std::vector<SuperScene*> scenes;
 	scenes.push_back(new Menu());
 	scenes.push_back(new Credits());
-	scenes.push_back(new Instruct());
+	scenes.push_back(new Instruct()); 
 	scenes.push_back(new Level1());
 	int s = scenes.size();
 

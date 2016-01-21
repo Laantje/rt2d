@@ -582,6 +582,11 @@ void Level1::updateHearts(float deltaTime)
 		hpDelay = 815;
 	}
 
+	//GAME OVER WHEN DEAD
+	if (player->hp <= 0) {
+		SuperScene::activescene = 4;
+	}
+
 	//MAKE HEART GREY WHEN HIT
 	if (!heart1->inUse) {
 		heart1->addSprite("assets/hp/hpDead.tga", 0.5f, 0.5f, 3, 0);

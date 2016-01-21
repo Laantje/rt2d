@@ -19,6 +19,7 @@
 #include "menu.h"
 #include "credits.h"
 #include "instruct.h"
+#include "gameover.h"
 
 
 /// @brief main entry point
@@ -33,6 +34,7 @@ int main( void )
 	scenes.push_back(new Credits());
 	scenes.push_back(new Instruct()); 
 	scenes.push_back(new Level1());
+	scenes.push_back(new GameOver());
 	int s = scenes.size();
 
 

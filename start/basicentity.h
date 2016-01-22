@@ -49,6 +49,8 @@ class BasicEntity: public Entity
 		int delay = 0;
 		int shotDelay = 0;
 		int tankSprite = 0;
+		int deadSprite = 0;
+		int deadDelay = 0;
 		int shootDelay = 0;
 		int rideDelay = 0;
 		int hitDelay = 0;

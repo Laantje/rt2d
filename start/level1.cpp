@@ -36,6 +36,9 @@ Level1::Level1() : SuperScene()
 	enemy->addSprite("assets/enemy/enemystand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 	enemy->scale = Point2(0.4f, 0.4f);
 	enemy->position = Point2(SWIDTH / 3 * 2, SHEIGHT / 3 * 2);
+	enemy->inUse = true;
+	enemy->halfHeight = 32;
+	enemy->halfWidth = 35;
 	enemy->delay = 400;
 
 	// add bullets
@@ -76,7 +79,7 @@ Level1::Level1() : SuperScene()
 
 
 	layers[3]->addChild(player);
-	layers[3]->addChild(enemy);
+	layers[2]->addChild(enemy);
 	layers[5]->addChild(smoke1);
 	layers[5]->addChild(smoke2);
 	layers[7]->addChild(heart1);
@@ -89,7 +92,7 @@ Level1::Level1() : SuperScene()
 Level1::~Level1()
 {
 	layers[3]->removeChild(player);
-	layers[3]->removeChild(enemy);
+	layers[2]->removeChild(enemy);
 	layers[5]->removeChild(smoke1);
 	layers[5]->removeChild(smoke2);
 	layers[7]->removeChild(heart1);
@@ -363,19 +366,19 @@ void Level1::updateBullet(float deltaTime)
 		}
 	}
 	if (smoke1->tankSprite == 175) {
-		smoke1->addSprite("assets/smoke/smoke2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		smoke1->addSprite("assets/smoke/smoke2.tga", 0.5f, 0.5f, 3, 0);
 	}
 	if (smoke1->tankSprite == 140) {
-		smoke1->addSprite("assets/smoke/smoke3.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		smoke1->addSprite("assets/smoke/smoke3.tga", 0.5f, 0.5f, 3, 0);
 	}
 	if (smoke1->tankSprite == 105) {
-		smoke1->addSprite("assets/smoke/smoke4.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		smoke1->addSprite("assets/smoke/smoke4.tga", 0.5f, 0.5f, 3, 0); 
 	}
 	if (smoke1->tankSprite == 70) {
-		smoke1->addSprite("assets/smoke/smoke5.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)	
+		smoke1->addSprite("assets/smoke/smoke5.tga", 0.5f, 0.5f, 3, 0); 
 	}
 	if (smoke1->tankSprite == 35) {
-		smoke1->addSprite("assets/smoke/smoke6.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		smoke1->addSprite("assets/smoke/smoke6.tga", 0.5f, 0.5f, 3, 0);
 	}
 	if (smoke1->tankSprite <= 0) {
 		smoke1->removeSprite();
@@ -467,6 +470,20 @@ void Level1::updateBullet(float deltaTime)
 			player->hitDelay = 100;
 			player->isHit = true;
 			player->hp--;
+			BasicEntity* e = new BasicEntity();
+			e->position = Point2((*it)->position.x, (*it)->position.y);
+			e->scale = Point2(0.3f, 0.3f);
+			e->delay = 180;
+			layers[6]->addChild(e);
+			explosions.push_back(e);
+			layers[4]->removeChild(*it);
+			delete (*it); // delete the Bullet
+			it = bullets.erase(it); // 'remove' from bullet list
+		}
+		else if (!enemy->isHit && (*it)->eLeft > enemy->eLeft && (*it)->eRight < enemy->eRight && (*it)->eTop > enemy->eTop && (*it)->eBottom < enemy->eBottom) {
+			enemy->isHit = true;
+			enemy->hitDelay = 40;
+			enemy->inUse = false;
 			BasicEntity* e = new BasicEntity();
 			e->position = Point2((*it)->position.x, (*it)->position.y);
 			e->scale = Point2(0.3f, 0.3f);
@@ -864,7 +881,6 @@ void Level1::updateHearts(float deltaTime)
 void Level1::updateExplosions(float deltaTime) {
 	std::vector<BasicEntity*>::iterator ite = explosions.begin(); // get the 'iterator' from the list.
 	while (ite != explosions.end()) {
-		std::cout << (*ite)->delay;
 		(*ite)->delay--;
 		if ((*ite)->delay == 180) {
 			(*ite)->addSprite("assets/explosion/expl1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
@@ -897,13 +913,19 @@ void Level1::updateExplosions(float deltaTime) {
 
 void Level1::updateEnemy(float deltaTime)
 {
+	//Collisions
+	enemy->eLeft = enemy->position.x - enemy->halfWidth;
+	enemy->eRight = enemy->position.x + enemy->halfWidth;
+	enemy->eTop = enemy->position.y - enemy->halfHeight;
+	enemy->eBottom = enemy->position.y + enemy->halfHeight;
+
 	//Values for player searching
 	enemy->UnderY = player->position.y - enemy->position.y;
 	enemy->AboveY = enemy->position.y - player->position.y;
 
 	enemy->NextX = player->position.x - enemy->position.x;
 	enemy->BeforeX = enemy->position.x - player->position.x;
-	
+
 	//Delay controller
 	if (enemy->delay > 0) {
 		enemy->delay--;
@@ -913,8 +935,35 @@ void Level1::updateEnemy(float deltaTime)
 		enemy->cpuLock = false;
 	}
 
-	if (enemy->facingPlayer && !enemy->reloading) {
+	if (enemy->inUse && enemy->facingPlayer && !enemy->reloading) {
 		enemyShoot();
+	}
+
+	//Enemy deadsprite
+	if (enemy->isHit && enemy->hitDelay > 0) {
+		enemy->hitDelay--;
+	}
+	else if (enemy->isHit && enemy->hitDelay <= 0) {
+		if (enemy->deadSprite == 0) {
+			enemy->addSprite("assets/enemy/tankcorpse1.tga", 0.5f, 0.5f, 3, 0);
+		}
+		else if (enemy->deadSprite == 1) {
+			enemy->addSprite("assets/enemy/tankcorpse2.tga", 0.5f, 0.5f, 3, 0);
+		}
+
+		if (enemy->deadDelay > 0) {
+			enemy->deadDelay--;
+		}
+		else if (enemy->deadDelay <= 0) {
+			if (enemy->deadSprite == 0) {
+				enemy->deadSprite++;
+				enemy->deadDelay = 80;
+			}
+			else if (enemy->deadSprite == 1) {
+				enemy->deadSprite--;
+				enemy->deadDelay = 80;
+			}
+		}
 	}
 
 	//Rotation Controller
@@ -932,7 +981,7 @@ void Level1::updateEnemy(float deltaTime)
 	}
 
 	//Check which way is the fastest to the player
-	if (enemy->position.x > player->position.x && enemy->position.y > player->position.y) {
+	if (enemy->inUse && enemy->position.x > player->position.x && enemy->position.y > player->position.y) {
 		if (enemy->BeforeX < enemy->AboveY) {
 			enemy->PreferX = true;
 			enemy->PreferY = false;
@@ -942,7 +991,7 @@ void Level1::updateEnemy(float deltaTime)
 			enemy->PreferY = true;
 		}
 	}
-	else if (enemy->position.x > player->position.x && enemy->position.y < player->position.y) {
+	else if (enemy->inUse && enemy->position.x > player->position.x && enemy->position.y < player->position.y) {
 		if (enemy->BeforeX < enemy->UnderY) {
 			enemy->PreferX = true;
 			enemy->PreferY = false;
@@ -952,7 +1001,7 @@ void Level1::updateEnemy(float deltaTime)
 			enemy->PreferY = true;
 		}
 	}
-	else if (enemy->position.x < player->position.x && enemy->position.y > player->position.y) {
+	else if (enemy->inUse && enemy->position.x < player->position.x && enemy->position.y > player->position.y) {
 		if (enemy->NextX < enemy->AboveY) {
 			enemy->PreferX = true;
 			enemy->PreferY = false;
@@ -962,7 +1011,7 @@ void Level1::updateEnemy(float deltaTime)
 			enemy->PreferY = true;
 		}
 	}
-	else if (enemy->position.x < player->position.x && enemy->position.y < player->position.y) {
+	else if (enemy->inUse && enemy->position.x < player->position.x && enemy->position.y < player->position.y) {
 		if (enemy->NextX < enemy->UnderY) {
 			enemy->PreferX = true;
 			enemy->PreferY = false;
@@ -975,23 +1024,23 @@ void Level1::updateEnemy(float deltaTime)
 
 
 	//If player is not around y position of enemy
-	if (enemy->AboveY >= 5 && !enemy->cpuLock) {
+	if (enemy->inUse && enemy->AboveY >= 5 && !enemy->cpuLock) {
 		enemy->AroundY = false;
 	}
-	if (enemy->UnderY >= 5 && !enemy->cpuLock) {
+	if (enemy->inUse && enemy->UnderY >= 5 && !enemy->cpuLock) {
 		enemy->AroundY = false;
 	}
 
 	//If player is not around x position of enemy
-	if (enemy->BeforeX >= 5 && !enemy->cpuLock) {
+	if (enemy->inUse && enemy->BeforeX >= 5 && !enemy->cpuLock) {
 		enemy->AroundX = false;
 	}
-	if (enemy->NextX >= 5 && !enemy->cpuLock) {
+	if (enemy->inUse && enemy->NextX >= 5 && !enemy->cpuLock) {
 		enemy->AroundX = false;
 	}
 
 	//x-axis player search
-	if (!enemy->cpuLock && !enemy->AroundX && player->position.x < enemy->position.x && enemy->PreferX) {
+	if (enemy->inUse && !enemy->cpuLock && !enemy->AroundX && player->position.x < enemy->position.x && enemy->PreferX) {
 		if (!enemy->AroundX && enemy->BeforeX <= 5) {
 			enemy->AroundX = true;
 			enemy->isMoving = false;
@@ -1005,7 +1054,7 @@ void Level1::updateEnemy(float deltaTime)
 		enemy->position.x -= 100 * deltaTime;
 		enemy->isMoving = true;
 	}
-	else if (!enemy->cpuLock && !enemy->AroundX && player->position.x > enemy->position.x && enemy->PreferX) {
+	else if (enemy->inUse && !enemy->cpuLock && !enemy->AroundX && player->position.x > enemy->position.x && enemy->PreferX) {
 		if (!enemy->AroundX && enemy->NextX <= 5) {
 			enemy->AroundX = true;
 			enemy->isMoving = false;
@@ -1019,7 +1068,7 @@ void Level1::updateEnemy(float deltaTime)
 		enemy->position.x += 100 * deltaTime;
 		enemy->isMoving = true;
 	}
-	else if (!enemy->cpuLock && enemy->AroundX) {
+	else if (enemy->inUse && !enemy->cpuLock && enemy->AroundX) {
 		if (enemy->position.y > player->position.y) {
 			enemy->facingDown = false;
 			enemy->facingUp = true;
@@ -1041,7 +1090,7 @@ void Level1::updateEnemy(float deltaTime)
 	}
 
 	//y-axis player search
-	if (!enemy->cpuLock && !enemy->AroundY && player->position.y < enemy->position.y && enemy->PreferY) {
+	if (enemy->inUse && !enemy->cpuLock && !enemy->AroundY && player->position.y < enemy->position.y && enemy->PreferY) {
 		if (!enemy->AroundY && enemy->AboveY <= 5) {
 			enemy->AroundY = true;
 			enemy->isMoving = false;
@@ -1055,7 +1104,7 @@ void Level1::updateEnemy(float deltaTime)
 		enemy->position.y -= 100 * deltaTime;
 		enemy->isMoving = true;
 	}
-	else if (!enemy->cpuLock && !enemy->AroundY && player->position.y > enemy->position.y && enemy->PreferY) {
+	else if (enemy->inUse && !enemy->cpuLock && !enemy->AroundY && player->position.y > enemy->position.y && enemy->PreferY) {
 		if (!enemy->AroundY && enemy->UnderY <= 5) {
 			enemy->AroundY = true;
 			enemy->isMoving = false;
@@ -1069,7 +1118,7 @@ void Level1::updateEnemy(float deltaTime)
 		enemy->position.y += 100 * deltaTime;
 		enemy->isMoving = true;
 	}
-	else if (!enemy->cpuLock && enemy->AroundY) {
+	else if (enemy->inUse && !enemy->cpuLock && enemy->AroundY) {
 		if (enemy->position.x > player->position.x) {
 			enemy->facingDown = false;
 			enemy->facingUp = false;
@@ -1093,7 +1142,7 @@ void Level1::updateEnemy(float deltaTime)
 	//enemy isMoving
 	enemy->rideDelay++;
 
-	if (enemy->isMoving && !enemy->AroundY) {
+	if (enemy->inUse && !enemy->cpuLock && enemy->isMoving && !enemy->AroundY) {
 		if (enemy->tankSprite == 0 && enemy->rideDelay >= 50) {
 			enemy->addSprite("assets/enemy/enemyride3.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
 			enemy->tankSprite++;
@@ -1116,7 +1165,9 @@ void Level1::updateEnemy(float deltaTime)
 		}
 	}
 	else {
-		enemy->addSprite("assets/enemy/enemystand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		if (enemy->inUse) {
+			enemy->addSprite("assets/enemy/enemystand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+		}
 	}
 }
 

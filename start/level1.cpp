@@ -30,7 +30,7 @@ Level1::Level1() : SuperScene()
 	player->halfWidth = 35;
 	
 
-	// add enemies
+	// add enemies iterator
 	std::vector<BasicEntity*> enemies;
 	enemy = new BasicEntity();
 	enemy->addSprite("assets/enemy/enemystand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
@@ -41,11 +41,25 @@ Level1::Level1() : SuperScene()
 	enemy->halfWidth = 35;
 	enemy->delay = 400;
 
+	// Create enemies for iterator
+	/*BasicEntity* en = new BasicEntity();
+	en->addSprite("assets/enemy/enemystand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	en->position = Point2(SWIDTH / 3 * 2, SHEIGHT / 3 * 2);
+	en->scale = Point2(0.4f, 0.4f);
+	en->inUse = true;
+	en->halfHeight = 32;
+	en->halfWidth = 35;
+	en->delay = 400;
+	layers[2]->addChild(en);
+	enemies.push_back(en);*/
+
 	// add bullets
 	std::vector<BasicEntity*> bullets;
 
-	// add shotsmokes
-	std::vector<BasicEntity*> smokes;
+	// add enemy shotsmokes
+	std::vector<BasicEntity*> enemysmokes;
+
+	// add player shotsmoke
 	smoke1 = new BasicEntity();
 	smoke2 = new BasicEntity();
 
@@ -913,6 +927,29 @@ void Level1::updateExplosions(float deltaTime) {
 
 void Level1::updateEnemy(float deltaTime)
 {
+	/*
+	std::vector<BasicEntity*>::iterator iten = enemies.begin(); // get the 'iterator' from the list.
+	while (iten != enemies.end()) {
+		//Collisions
+		(*iten)->eLeft = (*iten)->position.x - (*iten)->halfWidth;
+		(*iten)->eRight = (*iten)->position.x + (*iten)->halfWidth;
+		(*iten)->eTop = (*iten)->position.y - (*iten)->halfHeight;
+		(*iten)->eBottom = (*iten)->position.y + (*iten)->halfHeight;
+
+		//Values for player searching
+		(*iten)->UnderY = player->position.y - (*iten)->position.y;
+		(*iten)->AboveY = (*iten)->position.y - player->position.y;
+
+		(*iten)->NextX = player->position.x - (*iten)->position.x;
+		(*iten)->BeforeX = (*iten)->position.x - player->position.x;
+
+		else {
+			++iten;
+		}
+
+	}
+	*/
+
 	//Collisions
 	enemy->eLeft = enemy->position.x - enemy->halfWidth;
 	enemy->eRight = enemy->position.x + enemy->halfWidth;

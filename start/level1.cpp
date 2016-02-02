@@ -927,7 +927,6 @@ void Level1::updateExplosions(float deltaTime) {
 
 void Level1::updateEnemy(float deltaTime)
 {
-	/*
 	std::vector<BasicEntity*>::iterator iten = enemies.begin(); // get the 'iterator' from the list.
 	while (iten != enemies.end()) {
 		//Collisions
@@ -943,12 +942,312 @@ void Level1::updateEnemy(float deltaTime)
 		(*iten)->NextX = player->position.x - (*iten)->position.x;
 		(*iten)->BeforeX = (*iten)->position.x - player->position.x;
 
+		//Delay controller
+		if ((*iten)->delay > 0) {
+			(*iten)->delay--;
+			(*iten)->cpuLock = true;
+		}
 		else {
+			(*iten)->cpuLock = false;
+		}
+
+		if ((*iten)->inUse && (*iten)->facingPlayer && !(*iten)->reloading) {
+			BasicEntity* b = new BasicEntity();
+			if (!(*iten)->reloading) {
+				smoke2->tankSprite = 210;
+				(*iten)->shootDelay = 1250;
+			}
+
+			if (!(*iten)->reloading) {
+				b->addSprite("assets/bullet/bullet.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+				b->scale = Point2(0.06f, 0.06f);
+				b->halfHeight = 6;
+				b->halfWidth = 6;
+				smoke2->addSprite("assets/smoke/smoke1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+				smoke2->scale = Point2(0.3f, 0.3f);
+			}
+
+			if ((*iten)->facingUp && !(*iten)->reloading) {
+				smoke2->position = Point2((*iten)->position.x + 1, (*iten)->position.y - 57);
+				smoke2->rotation = 0 * DEG_TO_RAD;
+				b->position = Point2((*iten)->position.x + 1, (*iten)->position.y - 56);
+				b->shotUp = true;
+				b->shotDown = false;
+				b->shotLeft = false;
+				b->shotRight = false;
+			}
+			else if ((*iten)->facingDown && !(*iten)->reloading) {
+				smoke2->position = Point2((*iten)->position.x - 1, (*iten)->position.y + 57);
+				smoke2->rotation = 180 * DEG_TO_RAD;
+				b->position = Point2((*iten)->position.x - 1, (*iten)->position.y + 56);
+				b->shotUp = false;
+				b->shotDown = true;
+				b->shotLeft = false;
+				b->shotRight = false;
+			}
+			else if ((*iten)->facingLeft && !(*iten)->reloading) {
+				smoke2->position = Point2((*iten)->position.x - 57, (*iten)->position.y - 1);
+				smoke2->rotation = 270 * DEG_TO_RAD;
+				b->position = Point2((*iten)->position.x - 56, (*iten)->position.y - 1);
+				b->shotUp = false;
+				b->shotDown = false;
+				b->shotLeft = true;
+				b->shotRight = false;
+			}
+			else if ((*iten)->facingRight && !(*iten)->reloading) {
+				smoke2->position = Point2((*iten)->position.x + 57, (*iten)->position.y + 1);
+				smoke2->rotation = 90 * DEG_TO_RAD;
+				b->position = Point2((*iten)->position.x + 56, (*iten)->position.y + 1);
+				b->shotUp = false;
+				b->shotDown = false;
+				b->shotLeft = false;
+				b->shotRight = true;
+			}
+			if (!(*iten)->reloading) {
+				(*iten)->reloading = true;
+			}
+			layers[4]->addChild(b);
+			bullets.push_back(b);
+		}
+
+		//Enemy deadsprite
+		if ((*iten)->isHit && (*iten)->hitDelay > 0) {
+			(*iten)->hitDelay--;
+		}
+		else if ((*iten)->isHit && (*iten)->hitDelay <= 0) {
+			(*iten)->nextIt = true;
+			if ((*iten)->deadSprite == 0) {
+				(*iten)->addSprite("assets/enemy/tankcorpse1.tga", 0.5f, 0.5f, 3, 0);
+			}
+			else if ((*iten)->deadSprite == 1) {
+				(*iten)->addSprite("assets/enemy/tankcorpse2.tga", 0.5f, 0.5f, 3, 0);
+			}
+
+			if ((*iten)->deadDelay > 0) {
+				(*iten)->deadDelay--;
+			}
+			else if ((*iten)->deadDelay <= 0) {
+				if ((*iten)->deadSprite == 0) {
+					(*iten)->deadSprite++;
+					(*iten)->deadDelay = 80;
+				}
+				else if ((*iten)->deadSprite == 1) {
+					(*iten)->deadSprite--;
+					(*iten)->deadDelay = 80;
+				}
+			}
+		}
+
+		//Rotation Controller
+		if ((*iten)->facingDown) {
+			(*iten)->rotation = 180 * DEG_TO_RAD;
+		}
+		else if ((*iten)->facingUp) {
+			(*iten)->rotation = 0 * DEG_TO_RAD;
+		}
+		else if ((*iten)->facingRight) {
+			(*iten)->rotation = 90 * DEG_TO_RAD;
+		}
+		else if ((*iten)->facingLeft) {
+			(*iten)->rotation = 270 * DEG_TO_RAD;
+		}
+
+		//Check which way is the fastest to the player
+		if ((*iten)->inUse && (*iten)->position.x > player->position.x && (*iten)->position.y > player->position.y) {
+			if ((*iten)->BeforeX < (*iten)->AboveY) {
+				(*iten)->PreferX = true;
+				(*iten)->PreferY = false;
+			}
+			else {
+				(*iten)->PreferX = false;
+				(*iten)->PreferY = true;
+			}
+		}
+		else if ((*iten)->inUse && (*iten)->position.x > player->position.x && (*iten)->position.y < player->position.y) {
+			if ((*iten)->BeforeX < (*iten)->UnderY) {
+				(*iten)->PreferX = true;
+				(*iten)->PreferY = false;
+			}
+			else {
+				(*iten)->PreferX = false;
+				(*iten)->PreferY = true;
+			}
+		}
+		else if ((*iten)->inUse && (*iten)->position.x < player->position.x && (*iten)->position.y > player->position.y) {
+			if ((*iten)->NextX < (*iten)->AboveY) {
+				(*iten)->PreferX = true;
+				(*iten)->PreferY = false;
+			}
+			else {
+				(*iten)->PreferX = false;
+				(*iten)->PreferY = true;
+			}
+		}
+		else if ((*iten)->inUse && (*iten)->position.x < player->position.x && (*iten)->position.y < player->position.y) {
+			if ((*iten)->NextX < (*iten)->UnderY) {
+				(*iten)->PreferX = true;
+				(*iten)->PreferY = false;
+			}
+			else {
+				(*iten)->PreferX = false;
+				(*iten)->PreferY = true;
+			}
+		}
+
+
+		//If player is not around y position of enemy
+		if ((*iten)->inUse && (*iten)->AboveY >= 5 && !(*iten)->cpuLock) {
+			(*iten)->AroundY = false;
+		}
+		if ((*iten)->inUse && (*iten)->UnderY >= 5 && !(*iten)->cpuLock) {
+			(*iten)->AroundY = false;
+		}
+
+		//If player is not around x position of enemy
+		if ((*iten)->inUse && (*iten)->BeforeX >= 5 && !(*iten)->cpuLock) {
+			(*iten)->AroundX = false;
+		}
+		if ((*iten)->inUse && (*iten)->NextX >= 5 && !(*iten)->cpuLock) {
+			(*iten)->AroundX = false;
+		}
+
+		//x-axis player search
+		if ((*iten)->inUse && !(*iten)->cpuLock && !(*iten)->AroundX && player->position.x < (*iten)->position.x && (*iten)->PreferX) {
+			if (!(*iten)->AroundX && (*iten)->BeforeX <= 5) {
+				(*iten)->AroundX = true;
+				(*iten)->isMoving = false;
+				(*iten)->delay = 175;
+			}
+			(*iten)->facingDown = false;
+			(*iten)->facingUp = false;
+			(*iten)->facingLeft = true;
+			(*iten)->facingRight = false;
+			(*iten)->facingPlayer = false;
+			(*iten)->position.x -= 100 * deltaTime;
+			(*iten)->isMoving = true;
+		}
+		else if ((*iten)->inUse && !(*iten)->cpuLock && !(*iten)->AroundX && player->position.x > (*iten)->position.x && (*iten)->PreferX) {
+			if (!(*iten)->AroundX && (*iten)->NextX <= 5) {
+				(*iten)->AroundX = true;
+				(*iten)->isMoving = false;
+				(*iten)->delay = 175;
+			}
+			(*iten)->facingDown = false;
+			(*iten)->facingUp = false;
+			(*iten)->facingLeft = false;
+			(*iten)->facingRight = true;
+			(*iten)->facingPlayer = false;
+			(*iten)->position.x += 100 * deltaTime;
+			(*iten)->isMoving = true;
+		}
+		else if ((*iten)->inUse && !(*iten)->cpuLock && (*iten)->AroundX) {
+			if ((*iten)->position.y > player->position.y) {
+				(*iten)->facingDown = false;
+				(*iten)->facingUp = true;
+				(*iten)->facingLeft = false;
+				(*iten)->facingRight = false;
+				(*iten)->isMoving = false;
+				(*iten)->facingPlayer = true;
+				(*iten)->delay = 175;
+			}
+			else if ((*iten)->position.y < player->position.y) {
+				(*iten)->facingDown = true;
+				(*iten)->facingUp = false;
+				(*iten)->facingLeft = false;
+				(*iten)->facingRight = false;
+				(*iten)->isMoving = false;
+				(*iten)->facingPlayer = true;
+				(*iten)->delay = 175;
+			}
+		}
+
+		//y-axis player search
+		if ((*iten)->inUse && !(*iten)->cpuLock && !(*iten)->AroundY && player->position.y < (*iten)->position.y && (*iten)->PreferY) {
+			if (!(*iten)->AroundY && (*iten)->AboveY <= 5) {
+				(*iten)->AroundY = true;
+				(*iten)->isMoving = false;
+				(*iten)->delay = 175;
+			}
+			(*iten)->facingDown = false;
+			(*iten)->facingUp = true;
+			(*iten)->facingLeft = false;
+			(*iten)->facingRight = false;
+			(*iten)->facingPlayer = false;
+			(*iten)->position.y -= 100 * deltaTime;
+			(*iten)->isMoving = true;
+		}
+		else if ((*iten)->inUse && !(*iten)->cpuLock && !(*iten)->AroundY && player->position.y > (*iten)->position.y && (*iten)->PreferY) {
+			if (!(*iten)->AroundY && (*iten)->UnderY <= 5) {
+				(*iten)->AroundY = true;
+				(*iten)->isMoving = false;
+				(*iten)->delay = 175;
+			}
+			(*iten)->facingDown = true;
+			(*iten)->facingUp = false;
+			(*iten)->facingLeft = false;
+			(*iten)->facingRight = false;
+			(*iten)->facingPlayer = false;
+			(*iten)->position.y += 100 * deltaTime;
+			(*iten)->isMoving = true;
+		}
+		else if ((*iten)->inUse && !(*iten)->cpuLock && (*iten)->AroundY) {
+			if ((*iten)->position.x > player->position.x) {
+				(*iten)->facingDown = false;
+				(*iten)->facingUp = false;
+				(*iten)->facingLeft = true;
+				(*iten)->facingRight = false;
+				(*iten)->isMoving = false;
+				(*iten)->facingPlayer = true;
+				(*iten)->delay = 175;
+			}
+			else if ((*iten)->position.x < player->position.x) {
+				(*iten)->facingDown = false;
+				(*iten)->facingUp = false;
+				(*iten)->facingLeft = false;
+				(*iten)->facingRight = true;
+				(*iten)->isMoving = false;
+				(*iten)->facingPlayer = true;
+				(*iten)->delay = 175;
+			}
+		}
+
+		//enemy isMoving
+		(*iten)->rideDelay++;
+
+		if ((*iten)->inUse && !(*iten)->cpuLock && (*iten)->isMoving && !(*iten)->AroundY) {
+			if ((*iten)->tankSprite == 0 && (*iten)->rideDelay >= 50) {
+				(*iten)->addSprite("assets/enemy/enemyride3.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+				(*iten)->tankSprite++;
+				(*iten)->rideDelay = 0;
+			}
+			else if ((*iten)->tankSprite == 1 && (*iten)->rideDelay >= 50) {
+				(*iten)->addSprite("assets/enemy/enemyride2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+				(*iten)->tankSprite++;
+				(*iten)->rideDelay = 0;
+			}
+			else if ((*iten)->tankSprite == 2 && (*iten)->rideDelay >= 50) {
+				(*iten)->addSprite("assets/enemy/enemyride1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+				(*iten)->tankSprite++;
+				(*iten)->rideDelay = 0;
+			}
+			else if ((*iten)->tankSprite == 3 && (*iten)->rideDelay >= 50) {
+				(*iten)->addSprite("assets/enemy/enemyride2.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+				(*iten)->tankSprite = 0;
+				(*iten)->rideDelay = 0;
+			}
+		}
+		else {
+			if ((*iten)->inUse) {
+				(*iten)->addSprite("assets/enemy/enemystand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+			}
+		}
+
+		if ((*iten)->nextIt){
 			++iten;
 		}
 
 	}
-	*/
+	
 
 	//Collisions
 	enemy->eLeft = enemy->position.x - enemy->halfWidth;

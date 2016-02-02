@@ -130,7 +130,7 @@ void Menu::update(float deltaTime)
 		startb->sprite()->color.a = 127;
 		if (input()->getMouseUp(0)) {
 			startb->sprite()->color = RGBAColor(192, 192, 192, 255);
-			SuperScene::activescene = 2;
+			SuperScene::activescene = 3;
 		}
 	}
 	else {

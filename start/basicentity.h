@@ -25,6 +25,7 @@ class BasicEntity: public Entity
 		// Booleans
 		bool isMoving = false;
 		bool isHit = false;
+		bool nextIt = false;
 		bool cpuLock = false;
 		bool inUse = false;
 		bool facingUp = true;

@@ -159,6 +159,10 @@ void Level1::update(float deltaTime)
 	// ###############################################################
 	SuperScene::update(deltaTime);
 
+	if (input()->getKeyUp(GLFW_KEY_TAB)) {
+		resetGame();
+	}
+
 	// ###############################################################
 	// dynamic_line
 	// ###############################################################
@@ -1564,4 +1568,138 @@ void Level1::enemyShoot() {
 	}
 	layers[4]->addChild(b);
 	bullets.push_back(b);
+}
+
+void Level1::resetGame() {
+	layers[3]->removeChild(player);
+	layers[2]->removeChild(enemy);
+	layers[5]->removeChild(smoke1);
+	layers[5]->removeChild(smoke2);
+	layers[7]->removeChild(heart1);
+	layers[7]->removeChild(heart2);
+	layers[7]->removeChild(heart3);
+	layers[7]->removeChild(bicon);
+
+	//Delete bullets
+	for (int i = 0; i < bullets.size(); i++) {
+		delete bullets[i]; // delete Bullet from the heap (a pointer to it is still in the list)
+		bullets[i] = NULL; // set Bullet pointer to NULL (don't try to remove it from the list)
+	}
+	bullets.clear(); // list contains only NULL pointers. Make the list empty with 1 command.
+
+					 //Delete enemies
+	for (int i = 0; i < enemies.size(); i++) {
+		delete enemies[i]; // delete Bullet from the heap (a pointer to it is still in the list)
+		enemies[i] = NULL; // set Bullet pointer to NULL (don't try to remove it from the list)
+	}
+	enemies.clear(); // list contains only NULL pointers. Make the list empty with 1 command.
+
+					 //Delete explosions
+	for (int i = 0; i < explosions.size(); i++) {
+		delete explosions[i]; // delete Bullet from the heap (a pointer to it is still in the list)
+		explosions[i] = NULL; // set Bullet pointer to NULL (don't try to remove it from the list)
+	}
+	explosions.clear(); // list contains only NULL pointers. Make the list empty with 1 command.
+
+						//Delete smokes
+	for (int i = 0; i < smokes.size(); i++) {
+		delete smokes[i]; // delete Bullet from the heap (a pointer to it is still in the list)
+		smokes[i] = NULL; // set Bullet pointer to NULL (don't try to remove it from the list)
+	}
+	smokes.clear(); // list contains only NULL pointers. Make the list empty with 1 command.
+
+	delete player;
+	delete enemy;
+	delete smoke1;
+	delete smoke2;
+	delete heart1;
+	delete heart2;
+	delete heart3;
+	delete bicon;
+
+	t.start();
+
+	text[0]->message("Tankgame prototype");
+
+	text[4]->message("<Arrow keys> move tank");
+
+	// add player
+	player = new BasicEntity();
+	player->addSprite("assets/player/tankstand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	player->scale = Point2(0.4f, 0.4f);
+	player->position = Point2(SWIDTH / 4 * 2, SHEIGHT / 3);
+	player->halfHeight = 32;
+	player->halfWidth = 35;
+
+
+	// add enemies iterator
+	std::vector<BasicEntity*> enemies;
+	enemy = new BasicEntity();
+	enemy->addSprite("assets/enemy/enemystand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	enemy->scale = Point2(0.4f, 0.4f);
+	enemy->position = Point2(SWIDTH / 3 * 2, SHEIGHT / 3 * 2);
+	enemy->inUse = true;
+	enemy->halfHeight = 32;
+	enemy->halfWidth = 35;
+	enemy->delay = 400;
+
+	// Create enemies for iterator
+	/*BasicEntity* en = new BasicEntity();
+	en->addSprite("assets/enemy/enemystand.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	en->position = Point2(SWIDTH / 3 * 2, SHEIGHT / 3 * 2);
+	en->scale = Point2(0.4f, 0.4f);
+	en->inUse = true;
+	en->halfHeight = 32;
+	en->halfWidth = 35;
+	en->delay = 400;
+	layers[2]->addChild(en);
+	enemies.push_back(en);*/
+
+	// add bullets
+	std::vector<BasicEntity*> bullets;
+
+	// add enemy shotsmokes
+	std::vector<BasicEntity*> enemysmokes;
+
+	// add player shotsmoke
+	smoke1 = new BasicEntity();
+	smoke2 = new BasicEntity();
+
+	// add explosions
+	std::vector<BasicEntity*> explosions;
+
+	// add hearts
+	heart1 = new BasicEntity();
+	heart1->addSprite("assets/hp/hp1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	heart1->scale = Point2(0.5f, 0.5f);
+	heart1->position = Point2(SWIDTH / 30 * 24, SHEIGHT / 12);
+	heart1->inUse = true;
+
+	heart2 = new BasicEntity();
+	heart2->addSprite("assets/hp/hp1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	heart2->scale = Point2(0.5f, 0.5f);
+	heart2->position = Point2(SWIDTH / 30 * 26, SHEIGHT / 12);
+	heart2->inUse = true;
+
+	heart3 = new BasicEntity();
+	heart3->addSprite("assets/hp/hp1.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	heart3->scale = Point2(0.5f, 0.5f);
+	heart3->position = Point2(SWIDTH / 30 * 28, SHEIGHT / 12);
+	heart3->inUse = true;
+
+	// bullet icon
+	bicon = new BasicEntity();
+	bicon->addSprite("assets/bullet/bulletsicon.tga", 0.5f, 0.5f, 3, 0); // custom pivot point, filter, wrap (0=repeat, 1=mirror, 2=clamp)
+	bicon->scale = Point2(0.5f, 0.5f);
+	bicon->position = Point2(SWIDTH / 30 * 26, SHEIGHT / 11 * 2);
+
+
+	layers[3]->addChild(player);
+	layers[2]->addChild(enemy);
+	layers[5]->addChild(smoke1);
+	layers[5]->addChild(smoke2);
+	layers[7]->addChild(heart1);
+	layers[7]->addChild(heart2);
+	layers[7]->addChild(heart3);
+	layers[7]->addChild(bicon);
 }

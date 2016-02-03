@@ -67,6 +67,7 @@ private:
 	void updateHearts(float deltaTime);
 	void tankShoot();
 	void enemyShoot();
+	void resetGame();
 };
 
 #endif /* SCENE03_H */

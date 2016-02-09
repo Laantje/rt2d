@@ -26,7 +26,6 @@ public:
 	// Booleans
 	bool isMoving = false;
 	bool isHit = false;
-	bool nextIt = false;
 	bool cpuLock = false;
 	bool inUse = false;
 	bool facingUp = true;
@@ -74,8 +73,11 @@ public:
 
 private:
 	std::vector<BasicEntity*> enemysmokes;
+
 	void updateEnemy(float deltaTime);
+	void updateSmokes(float deltaTime);
 	void enemyShoot();
+	
 };
 
 #endif /* ENEMY_H */

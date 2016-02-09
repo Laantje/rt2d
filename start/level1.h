@@ -24,6 +24,7 @@ public:
 	virtual void update(float deltaTime);
 
 	int hpDelay = 815;
+	static std::vector<BasicEntity*> bullets;
 
 private:
 	Timer t;
@@ -54,7 +55,6 @@ private:
 	BasicEntity* explosion3;
 
 	//vector
-	std::vector<BasicEntity*> bullets;
 	std::vector<BasicEntity*> explosions;
 	std::vector<BasicEntity*> smokes;
 	std::vector<BasicEntity*> enemies;

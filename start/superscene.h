@@ -14,6 +14,7 @@
 #include <rt2d/scene.h>
 #include <rt2d/text.h>
 #include "basicentity.h"
+#include "enemy.h"
 
 struct Player
 {
@@ -31,10 +32,10 @@ public:
 	void addPlayer(Player* p) { player = p; };
 
 	static int activescene;
+	static std::vector<BasicEntity*> layers;
 
 protected:
 	unsigned int top_layer;
-	std::vector<BasicEntity*> layers;
 	std::vector<Text*> text;
 	Player* player;
 	void moveCamera(float deltaTime);

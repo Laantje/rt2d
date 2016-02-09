@@ -181,6 +181,8 @@ add_executable(start
 	start/main.cpp
 	start/basicentity.cpp
 	start/basicentity.h
+	start/enemy.cpp
+	start/enemy.h
 	start/myentity.cpp
 	start/myentity.h
 	start/level1.cpp
